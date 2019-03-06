@@ -1,0 +1,39 @@
+<VALID>     ::= <ASSIGN>
+<VALID>     ::= <EXPR>
+
+<ASSIGN>    ::= <VAR> = <EXPR> | <VAR> is <EXPR>
+
+<EXPR>      ::= <MATH_EXPR>
+
+<MATH_EXPR> ::= <MATH_EXPR> + <TERM>
+            | <MATH_EXPR> add <TERM>
+            | <MATH_EXPR> - <TERM>
+            | <MATH_EXPR> subtract <TERM>
+            | <TERM>
+# Unary minus sign
+
+<TERM>      ::= <TERM> * <FACTOR>
+            | <TERM> multiply <FACTOR>
+            | <TERM> / <FACTOR>
+            | <TERM> divide by <FACTOR>
+            | <TERM> over <FACTOR>
+            | <FACTOR>
+
+<FACTOR>    ::= <EXP> ** <FACTOR>
+            | <EXP> to the power of <FACTOR>
+            | <EXP>
+
+<EXP>       ::= ( <EXPR> )
+            | <VAR>
+
+<VAR>       ::= <PREFIX> [\w+]
+
+
+
+
+
+
+
+
+
+Why are we still here? Just to suffer?
