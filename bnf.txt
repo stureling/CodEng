@@ -1,30 +1,73 @@
-<VALID>     ::= <ASSIGN>
-<VALID>     ::= <EXPR>
+<PROGRAM>           ::= <CLASSDEF> | <CLASSDEF> <PROGRAM>
+<CLASSDEF>          ::= class 
 
-<ASSIGN>    ::= <VAR> = <EXPR> | <VAR> is <EXPR>
+<STATEMENTS>        ::= <STATEMENTS> <STATEMENT>
+                    | <STATEMENT>
+<STATEMENT>         ::= <MATCHED>
+                    | <UNMATCHED>
+<MATCHED>           ::= if <LOGIC_EXPR> then <MATCHED> else <MATCHED>
+                    | <FOR_LOOP
+                    | <WHILE_LOOP
+                    |
+<FOR_LOOP>          ::= for 
+<WHILE_LOOP>        ::= while 
+<UNMATCHED>         ::= if <LOGIC_EXPR> then <STATEMENT>
+                    | if <LOGIC_EXPR> then <MATCHED> else <UNMATCHED>
 
-<EXPR>      ::= <MATH_EXPR>
 
-<MATH_EXPR> ::= <MATH_EXPR> + <TERM>
-            | <MATH_EXPR> add <TERM>
-            | <MATH_EXPR> - <TERM>
-            | <MATH_EXPR> subtract <TERM>
-            | <TERM>
+
+<VALID>             ::= <ASSIGN>
+<VALID>             ::= <EXPR>
+<ASSIGN>            ::= <VAR> = <EXPR> 
+                    | <PREFIX> <VAR> is <EXPR>
+<PREFIX>            ::= the
+                    | a
+                    | an
+<EXPR>              ::= <ARITHMATIC_EXPR>
+                    | <LOGIC_EXPR>
+<ARITHMATIC_EXPR>   ::= <ARITHMATIC_EXPR> + <TERM>
+                    | <ARITHMATIC_EXPR> add <TERM>
+                    | <ARITHMATIC_EXPR> - <TERM>
+                    | <ARITHMATIC_EXPR> subtract <TERM>
+                    | <TERM>
 # Unary minus sign
+<TERM>              ::= <TERM> * <FACTOR>
+                    | <TERM> multiply <FACTOR>
+                    | <TERM> / <FACTOR>
+                    | <TERM> divide by <FACTOR>
+                    | <TERM> over <FACTOR>
+                    | <FACTOR>
+<FACTOR>            ::= <EXP> ** <FACTOR>
+                    | <EXP> to the power of <FACTOR>
+                    | <EXP>
+<EXP>               ::= ( <EXPR> )
+                    | <VAR>
+<VAR>               ::= [\w+]
+                    | <IDENTIFIER>?
+<LOGIC_EXPR>        ::= <BOOL_EXPR>
+<BOOL_EXPR>         ::= <BOOL_CONST>
+                    | <BOOL_VAR>
+                    | <RELETIONAL_EXPR>
+                    | <BOOL_OPERATOR>
+<BOOL_CONST>        ::= true
+                    | false
+<BOOL_VAR>          ::= <IDENTIFIER>?
+<BOOL_OPERATOR>     ::= !
+                    | NOT
+                    | &&
+                    | AND
+                    | ||
+                    | OR
+<RELETIONAL_EXPR>   ::= <OPERAND> <REL_OPERATOR> <OPERAND>
+<REL_OPERATOR>      ::= <
+                    | <=
+                    | >
+                    | >=
+                    | ==
+                    | !=
+<OPERAND>           ::= <ARITHMATIC_EXPR>
+                    | <BOOL_EXPR>
+                    | <STRING>
+<STRING>            ::=
 
-<TERM>      ::= <TERM> * <FACTOR>
-            | <TERM> multiply <FACTOR>
-            | <TERM> / <FACTOR>
-            | <TERM> divide by <FACTOR>
-            | <TERM> over <FACTOR>
-            | <FACTOR>
-
-<FACTOR>    ::= <EXP> ** <FACTOR>
-            | <EXP> to the power of <FACTOR>
-            | <EXP>
-
-<EXP>       ::= ( <EXPR> )
-            | <VAR>
-
-<VAR>       ::= <PREFIX> [\w+]
 
