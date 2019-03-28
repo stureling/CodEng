@@ -1,6 +1,11 @@
 require_relative 'rdparse.rb'
 
 class CodEng
+
+  
+
+
+  #\+|-|\*|\/|<=|>=|<|>|=|==|\|\||&&|\+=|-=|\+\+|--|!=|%|!
         
   @@token_table = {
     "operators" => //
@@ -52,7 +57,7 @@ class CodEng
       end
 
       rule :factor do
-        match(:exp, '**', :factor) { |a, _, b| a**b }
+        match(:exp, :exponent, :factor) { |a, _, b| a**b }
         match(:exp, 'to', 'the', 'power', 'of', :factor) { |a, _, _, _, _, b| a**b }
         match(:exp) { |m| m }
       end
