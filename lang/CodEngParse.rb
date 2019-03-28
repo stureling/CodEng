@@ -1,13 +1,19 @@
 require_relative 'rdparse.rb'
 
 class CodEng
+
+  
+
+
+  #\+|-|\*|\/|<=|>=|<|>|=|==|\|\||&&|\+=|-=|\+\+|--|!=|%|!
         
   def initialize
     @CodEngParser = Parser.new( "CodEng") do
       token(/\s+/)
       token(/\d+/) { |t| t.to_i }
       token(/[a-zA-Z_]+/) { |t| t }
-      token(/./) { |t| t }
+      token(/\*\*/) { :exponent }
+      token(//)
 
       start :valid do
         match(:assign) { |m| m }
@@ -47,7 +53,7 @@ class CodEng
       end
 
       rule :factor do
-        match(:exp, '**', :factor) { |a, _, b| a**b }
+        match(:exp, :exponent, :factor) { |a, _, b| a**b }
         match(:exp, 'to', 'the', 'power', 'of', :factor) { |a, _, _, _, _, b| a**b }
         match(:exp) { |m| m }
       end
@@ -63,7 +69,7 @@ class CodEng
       end
 
       rule :num do
-        match(Interger) { |m| m }
+        match(Integer) { |m| m }
       end
     end
   end
