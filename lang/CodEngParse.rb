@@ -2,12 +2,16 @@ require_relative 'rdparse.rb'
 
 class CodEng
         
+  @@token_table = {
+    "operators" => //
+  }
+
   def initialize
     @CodEngParser = Parser.new( "CodEng") do
       token(/\s+/)
       token(/\d+/) { |t| t.to_i }
       token(/[a-zA-Z_]+/) { |t| t }
-      token(/./) { |t| t }
+      token(@@token_table["operators"]) { |t| t }
 
       start :valid do
         match(:assign) { |m| m }
@@ -24,6 +28,7 @@ class CodEng
 
       rule :expr do
         match(:arithmatic_expr)
+        match(:logic_expr)
       end
 
       rule :arithmatic_expr do
@@ -63,7 +68,11 @@ class CodEng
       end
 
       rule :num do
-        match(Interger) { |m| m }
+        match(Integer) { |m| m }
+      end
+
+      rule :logic_expr do
+        match()
       end
     end
   end
