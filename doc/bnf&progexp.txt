@@ -1,16 +1,18 @@
-CodEng
+CodEng <--- språkets namn (preliminärt)
 
-#Blockavslut : dubblel radbrytning
 #Kommentrer  : #
 
 <PROGRAM>           ::= <STATEMENT_LIST>
                     | <CLASSDEF>
                     | <EMPTY>
 
-<CLASSDEF>          ::= class <CLASSBLOCK>
+<CLASSDEF>          ::= class <CLASSBLOCK> 
 
-<BLOCK>             ::= <STATEMENTS>
-                    | <STATEMENTS> <BLOCK>
+Det är inte färdigt hur klasserna ska vara uppbyggda helt och hållet ännu och 
+vi har inte fixat någon definition funktion/metod heller.
+
+<BLOCK>             ::= start <STATEMENTS> stop
+                    | start <STATEMENTS> <BLOCK> stop
 
 <STATEMENTS>        ::= <STATEMENTS> <STATEMENT>
                     | <STATEMENT>
@@ -24,16 +26,12 @@ CodEng
                     | <VALID>
 
 <FOR_LOOP>          ::= for <VAR> in <VAR> do <BLOCK>
-                    | for
+                    #mer här?
 
 <WHILE_LOOP>        ::= while <LOGIC_EXPR> do <BLOCK>
 
 <UNMATCHED>         ::= if <LOGIC_EXPR> then <STATEMENT>
                     | if <LOGIC_EXPR> then <MATCHED> else <UNMATCHED>
-                    |
-
-
-
 
 <VALID>             ::= <ASSIGN>
 
@@ -105,3 +103,55 @@ CodEng
                     | <STRING>
 
 <STRING>            ::= "*"
+
+Programexempel:
+Efter "#=>" kommer resultatet från den raden.
+
+#say är synonym till print
+say "Write 3 numbers: "
+#receiving är synonym till input
+x = receiving()                   exemple med strängen: "8 5 22"
+x use split(" ")
+start foo(x):
+    if x[0] > x[1] then
+        whisper "It's fine."        #=> It's fine.
+    else
+        say x[1] + x[2]             #=> 27\n
+    stop
+\n
+\n
+
+Samma programexempel som ovan fast mer textskrivet:
+
+say "Write three numbers: "
+x is receiving()
+x use split(" ")
+start foo with x:
+    if x[0] is greater than x[1] then
+        whisper "It's fine."        #=> It's fine.
+    else
+        say x[1] + x[2]             #=> 27\n
+    stop
+\n
+\n
+
+Vi har tyvärr inte hittat på fler programexempel då vi börjat en del på 
+att först få implementationen för "ARITHMATIC_EXPR" att fungera korrekt.
+
+Vi har för tillfället inte bestämt några specifika klasser ännu som ska
+implementeras då vi inte har diskuterat hur man överlag borde tänka vid 
+implementationen av språket i parsern utöver det som vi såg i rdparseuppgifterna
+från TDP007. 
+
+Vi tänker fortfarande att språket skulle vara objektsorienterat men även här
+har vi inte kommit långt angående tankarna kring grunden med att just objekt
+skulle finnas. Inga speciella tankar kring arv m.m. 
+
+Angående scope tänker vi just nu på att använda "static scope" då det verkar
+vara det som vi är mest vana vid att se i andra programmeringsspråk.
+
+Att vi inte kommit långt med vissa delar var att vi först och främst nu har
+försökt mer grundligt att få till ett BNF som fungerar och faktiskt kan
+användas som grund till våra tankar för implementationen av mer specifika
+delar.
+

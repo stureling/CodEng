@@ -1,19 +1,18 @@
 require_relative 'rdparse.rb'
 
 class CodEng
-
-  
-
-
-  #\+|-|\*|\/|<=|>=|<|>|=|==|\|\||&&|\+=|-=|\+\+|--|!=|%|!
         
   def initialize
     @CodEngParser = Parser.new( "CodEng") do
       token(/\s+/)
       token(/\d+/) { |t| t.to_i }
+      token(/\*\*|to the power of/) { :exponent }
+      token(/\+|plus/) { :plus }
+      token(/-|minus/) { :minus }
+      token(/\*|times/) { :mult }
+      token(/\/|over/) { :div }
+      token(/-[\d]+/) { :negative }
       token(/[a-zA-Z_]+/) { |t| t }
-      token(/\*\*/) { :exponent }
-      token(//)
 
       start :valid do
         match(:assign) { |m| m }
@@ -29,39 +28,44 @@ class CodEng
       end
 
       rule :expr do
-        match(:arithmatic_expr)
+        match(:arithmetic_expr)
       end
 
-      rule :arithmatic_expr do
-        match(:arithmetic_expr, '+', :term) { |a, _, b| a + b }
-        match(:arithmetic_expr, 'plus', :term) { |a, _, b| a + b }
-        match('add', :arithmetic_expr, 'to', :term) { |_, a, _, b| a + b }
-        match(:arithmetic_expr, '-', :term) { |a, _, b| a - b }
-        match(:arithmetic_expr, 'minus', :term) { |a, _, b| a - b }
-        match('subtract', :arithmetic_expr, 'from', :term) { |_, a, _, b| a - b }
+      rule :arithmetic_expr do
+        match(:arithmetic_expr, :plus, :term) { |a, _, b| a + b }
+        match(:arithmetic_expr, :plus, :term) { |a, _, b| a + b }
+        #match('add', :arithmetic_expr, 'to', :term) { |_, a, _, b| a + b }
+        match(:arithmetic_expr, :minus, :term) { |a, _, b| a - b }
+        match(:arithmetic_expr, :minus, :term) { |a, _, b| a - b }
+        #match('subtract', :arithmetic_expr, 'from', :term) { |_, a, _, b| a - b }
         match(:term) { |m| m }
       end
 
       rule :term do
-        match(:term, '*', :factor) { |a, _, b| a * b }
-        match('multiply', :term, 'by', :factor) { |_, a, _, b| a * b }
-        match(:term, 'times', :factor) { |a, _, b| a * b }
-        match(:term, '/', :factor) { |a, _, b| a / b }
-        match(:term, 'over', :factor) { |a, _, b| a / b }
-        match('divide', :term, 'by', :factor) { |_, a, _, b| a / b }
+        match(:term, :mult, :factor) { |a, _, b| a * b }
+        #match('multiply', :term, 'by', :factor) { |_, a, _, b| a * b }
+        match(:term, :mult, :factor) { |a, _, b| a * b }
+        match(:term, :div, :factor) { |a, _, b| a / b }
+        match(:term, :div, :factor) { |a, _, b| a / b }
+        #match('divide', :term, 'by', :factor) { |_, a, _, b| a / b }
         match(:factor) { |m| m }
       end
 
       rule :factor do
         match(:exp, :exponent, :factor) { |a, _, b| a**b }
-        match(:exp, 'to', 'the', 'power', 'of', :factor) { |a, _, _, _, _, b| a**b }
+        match(:exp, :exponent, :factor) { |a, _, b| a**b }
         match(:exp) { |m| m }
       end
 
       rule :exp do
-        match('(', :expr, ')') { |_, m, _| m }
+        match('(', :arithmetic_expr, ')') { |_, m, _| m }
         match(:var) { |m| m }
       end
+
+      #rule :unary do
+      #  match(:negative) { |}
+      #  match(:var) { |m| m }
+      #end
 
       rule :var do
         match(/[a-zA-z]{1}\w*/) { |m| m }
@@ -78,14 +82,14 @@ class CodEng
     ["quit","exit","bye",""].include?(str.chomp)
   end
 
-  def roll
+  def run
     print "[CodEng] "
     str = gets
     if done(str) then
       puts "Bye."
     else
       puts "=> #{@CodEngParser.parse str}"
-      roll
+      run
     end
   end
 
@@ -97,5 +101,6 @@ class CodEng
     end
   end
 end
+
 a = CodEng.new
-a.roll
+a.run
