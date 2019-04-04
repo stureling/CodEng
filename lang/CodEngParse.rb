@@ -7,29 +7,69 @@ class CodEng
       token(/\s+/)
       token(/\d+/) { |t| t.to_i }
       token(/\*\*|to the power of/) { :exponent }
-      token(/\+|plus/) { :plus }
-      token(/-|minus/) { :minus }
-      token(/\*|times/) { :mult }
-      token(/\/|over/) { :div }
-      token(/-[\d]+/) { :negative }
+      token(/\+|plus/) { :plus } #should probs be changed
+      token(/-|minus/) { :minus }     #|
+      token(/\*|times/) { :mult }     #|
+      token(/\/|over/) { :div }       #|
+      token(/-[\d]+/) { :negative }   #|
+      token(/=|is/)                  #<->
       token(/[a-zA-Z_]+/) { |t| t }
       token(/./) { |t| t }
 
-      start :valid do
+
+      start :block do
+        match('start', :statements, 'stop') { |_, a, _| a}
+        match(:statements) { |m| m}
+        #match(start, :statements, :block, stop) { |_, a, b, _| a, b }
+      end
+      
+      rule :statements do
+        match(:statements, :statment) { |m| m }
+        match(:statment) { |m| m }
+      end
+
+      rule :statment do
+        match(:matched) { |m| m }
+        match(:unmatched) { |m| m }
+      end
+
+      rule :unmatched do
+        #match('if', :logic_expr, 'then' :statment) { |_, l, _, s| if l then s end}
+        #match('if', :logic_expr, 'then' :matched 'else' :statment) { |_, l, _, m, _, s| if l then m else s end}
+      end
+
+      rule :matched do
+        #match('if', :logic_expr, 'then' :matched 'else' :matched) { |_, l, _, m, _, m| if l then m else m end}
+        match(:for_loop) { |m| m }
+        match(:while_loop) { |m| m}
+        match(:valid) { |m| m }
+      end
+=begin
+      rule :for_loop do
+        match('for', :var, 'in', :var, 'do', :block) { |_, v, _, w, _ b| for v in w do b end}
+        match(:expr) { |m| m }
+      end
+
+      rule :while_loop do
+        match('while', :logic_expr 'do' :block) { |_, l, _, b| while l do b end}
+        match(:expr) { |m| m }
+      end
+=end
+      rule :valid do
         match(:assign) { |m| m }
         match(:expr) { |m| m }
       end
 
       rule :assign do
-        match(:var, '=', :expr) { |var, _, expr| @vars[var] = expr }
-        match(:prefix, :var, 'is', :expr) { |_, var, _, expr| @vars[var] = expr } #
+        #match(:var, '=', :expr) { |var, _, expr| @vars[var] = expr }
+        #match(:prefix, :var, 'is', :expr) { |_, var, _, expr| @vars[var] = expr } #
       end
 
       rule :prefix do
       end
 
       rule :expr do
-        match(:arithmatic_expr)
+        match(:arithmetic_expr)
         match(:logic_expr)
       end
 
