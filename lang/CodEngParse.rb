@@ -1,10 +1,6 @@
 require_relative 'rdparse.rb'
 
 class CodEng
-        
-  @@token_table = {
-    "operators" => //
-  }
 
   def initialize
     @CodEngParser = Parser.new( "CodEng") do
@@ -17,6 +13,7 @@ class CodEng
       token(/\/|over/) { :div }
       token(/-[\d]+/) { :negative }
       token(/[a-zA-Z_]+/) { |t| t }
+      token(/./) { |t| t }
 
       start :valid do
         match(:assign) { |m| m }
@@ -24,8 +21,8 @@ class CodEng
       end
 
       rule :assign do
-        match(:var, '=', :expr) { |a, _, b| } # variable assignment
-        match(:prefix, :var, 'is', :expr) { |_, a, _, b| } # variable assignment
+        match(:var, '=', :expr) { |var, _, expr| @vars[var] = expr }
+        match(:prefix, :var, 'is', :expr) { |_, var, _, expr| @vars[var] = expr } #
       end
 
       rule :prefix do
@@ -38,9 +35,7 @@ class CodEng
 
       rule :arithmetic_expr do
         match(:arithmetic_expr, :plus, :term) { |a, _, b| a + b }
-        match(:arithmetic_expr, :plus, :term) { |a, _, b| a + b }
         #match('add', :arithmetic_expr, 'to', :term) { |_, a, _, b| a + b }
-        match(:arithmetic_expr, :minus, :term) { |a, _, b| a - b }
         match(:arithmetic_expr, :minus, :term) { |a, _, b| a - b }
         #match('subtract', :arithmetic_expr, 'from', :term) { |_, a, _, b| a - b }
         match(:term) { |m| m }
@@ -48,16 +43,14 @@ class CodEng
 
       rule :term do
         match(:term, :mult, :factor) { |a, _, b| a * b }
-        #match('multiply', :term, 'by', :factor) { |_, a, _, b| a * b }
-        match(:term, :mult, :factor) { |a, _, b| a * b }
+        match('multiply', :term, 'by', :factor) { |_, a, _, b| a * b }
         match(:term, :div, :factor) { |a, _, b| a / b }
         match(:term, :div, :factor) { |a, _, b| a / b }
-        #match('divide', :term, 'by', :factor) { |_, a, _, b| a / b }
+        match('divide', :term, 'by', :factor) { |_, a, _, b| a / b }
         match(:factor) { |m| m }
       end
 
       rule :factor do
-        match(:exp, :exponent, :factor) { |a, _, b| a**b }
         match(:exp, :exponent, :factor) { |a, _, b| a**b }
         match(:exp) { |m| m }
       end
@@ -73,7 +66,7 @@ class CodEng
       #end
 
       rule :var do
-        match(/[a-zA-z]{1}\w*/) { |m| m }
+        match(/[a-zA-z]{1}\w*/) { |var| @vars.key?(var) ? @vars[var] : var }
         match(:num)
       end
 
@@ -82,8 +75,17 @@ class CodEng
       end
 
       rule :logic_expr do
-        match()
+        match(:logic_expr, 'or', :logic_expr) { |a, _, c| a || c }
+        match(:logic_expr, 'and', :logic_expr) { |a, _, c| a && c }
+        match('not', :logic_expr) { |_, a| !a }
+        match(:logic_term) { |a| a }
       end
+
+      rule :logic_term do
+        match('true') { |_| true }
+        match('false') { |_| false }
+      end
+
     end
   end
 
