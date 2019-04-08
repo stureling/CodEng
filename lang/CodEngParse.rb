@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 require_relative 'rdparse.rb'
 require_relative 'CodEngClassDef.rb'
 

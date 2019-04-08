@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 class Reloperators
     def initialize(in1, comp_op, in2)
         @in1 = in1
@@ -23,12 +25,43 @@ end
 
 class Forloop
     def initialize
-
+	#TODO
     end
 end
 
 class Whileloop
     def initialize
-        
+	#TODO
+    end
+end
+
+
+class Wholenum
+    def initialize(num)
+	    @value = num.to_i
+    end
+end
+
+class Floatnum
+    def initialize(num)
+	    @value = num.to_f
+    end
+end
+
+class Charstring
+    def initialize(num)
+	#TODO
+    end
+end
+
+class List
+    def initialize(num)
+	#TODO
+    end
+end
+
+class Hashtable
+    def initialize(num)
+        #TODO
     end
 end
