@@ -1,24 +1,25 @@
 require_relative 'rdparse.rb'
+require_relative 'CodEngClassDef.rb'
 
 class CodEng
 
   def initialize
     @CodEngParser = Parser.new( "CodEng") do
       token(/\s+/)
-      token(/\d+/) { |t| t.to_i }
+      token(/-?\d+/) { |t| t.to_i }
       token(/\*\*|to the power of/) { :exponent }
       token(/\+|plus/) { :plus } #should probs be changed
       token(/-|minus/) { :minus }     #|
       token(/\*|times/) { :mult }     #|
       token(/\/|over/) { :div }       #|
-      token(/-[\d]+/) { :negative }   #|
+      token(/<=|>=|==|!=|&&|\|\|/) { |t| t } 
       token(/=|is/)                  #<->
       token(/[a-zA-Z_]+/) { |t| t }
       token(/./) { |t| t }
 
 
       start :block do
-        match('start', :statements, 'stop') { |_, a, _| a}
+        #match('start', :statements, 'stop') { |_, m, _| m }
         match(:statements) { |m| m}
         #match(start, :statements, :block, stop) { |_, a, b, _| a, b }
       end
@@ -75,9 +76,9 @@ class CodEng
 
       rule :arithmetic_expr do
         match(:arithmetic_expr, :plus, :term) { |a, _, b| a + b }
-        #match('add', :arithmetic_expr, 'to', :term) { |_, a, _, b| a + b }
+        match('add', :arithmetic_expr, 'to', :term) { |_, a, _, b| a + b }
         match(:arithmetic_expr, :minus, :term) { |a, _, b| a - b }
-        #match('subtract', :arithmetic_expr, 'from', :term) { |_, a, _, b| a - b }
+        match('subtract', :arithmetic_expr, 'from', :term) { |_, a, _, b| a - b }
         match(:term) { |m| m }
       end
 
@@ -100,11 +101,6 @@ class CodEng
         match(:var) { |m| m }
       end
 
-      #rule :unary do
-      #  match(:negative) { |}
-      #  match(:var) { |m| m }
-      #end
-
       rule :var do
         match(/[a-zA-z]{1}\w*/) { |var| @vars.key?(var) ? @vars[var] : var }
         match(:num)
@@ -115,9 +111,11 @@ class CodEng
       end
 
       rule :logic_expr do
-        match(:logic_expr, 'or', :logic_expr) { |a, _, c| a || c }
-        match(:logic_expr, 'and', :logic_expr) { |a, _, c| a && c }
-        match('not', :logic_expr) { |_, a| !a }
+        match(:logic_expr, '&&', :logic_expr) { |a, b, c| Reloperators.new(a, b, c).compare }
+        #match(:logic_expr, :comp_op, :logic_expr) { |a, _, c| a && c }
+        #match(:logic_expr, 'or', :logic_expr) { |a, _, c| a || c }
+        #match(:logic_expr, 'and', :logic_expr) { |a, _, c| a && c }
+        #match('not', :logic_expr) { |_, a| !a }
         match(:logic_term) { |a| a }
       end
 
