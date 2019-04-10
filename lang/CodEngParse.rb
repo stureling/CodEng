@@ -82,7 +82,6 @@ class CodEng
 
       rule :expr do
         match(:logic_expr)
-        match(:arithmetic_expr)
       end
 
       rule :arithmetic_expr do
@@ -129,6 +128,7 @@ class CodEng
         match(:logic_expr, :eqlgreater, :logic_expr) { |a, b, c| Reloperators.new(a, b, c)}
         match(:logic_expr, :less, :logic_expr) { |a, b, c| Reloperators.new(a, b, c)}
         match(:logic_expr, :eqlless, :logic_expr) { |a, b, c| Reloperators.new(a, b, c)}
+        match(:arithmetic_expr)
         match(:logic_term) { |a| a }
       end
 
