@@ -18,14 +18,14 @@ class Reloperators
     end
     def assess
         case @op
-        when :eqlless return (@expr1 <= @expr2)
-        when :eqlgreater return (@expr1 >= @expr2)
-        when :less return (@expr1 < @expr2)
-        when :greater return (@expr1 > @expr2)
-        when :equal return (@expr1 == @expr2)
-        when :not return (!@expr1)
-        when :and return (@expr1 && @expr2)
-        when :or return (@expr1 || @expr2)
+        when :eqlless then return (@expr1 <= @expr2)
+        when :eqlgreater then return (@expr1 >= @expr2)
+        when :less then return (@expr1 < @expr2)
+        when :greater then return (@expr1 > @expr2)
+        when :equal then return (@expr1 == @expr2)
+        when :not then return (!@expr1)
+        when :and then return (@expr1 && @expr2)
+        when :or then return (@expr1 || @expr2)
         end
     end
 end
@@ -39,12 +39,12 @@ class Operators
 
     def assess
         case @op
-        when :plus return (@expr1 + @expr2)
-        when :minus return (@expr1 - @expr2)
-        when :mult return (@expr1 * @expr2)
-        when :div return (@expr1 / @expr2)
-        when :exponent return (@expr1 ** @expr2)
-	    end
+        when :plus then return (@expr1 + @expr2)
+        when :minus then return (@expr1 - @expr2)
+        when :mult then return (@expr1 * @expr2)
+        when :div then return (@expr1 / @expr2)
+        when :exponent then return (@expr1 ** @expr2)
+        end
     end
 end
 
