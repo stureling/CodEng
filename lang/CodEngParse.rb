@@ -21,9 +21,9 @@ class CodEng
       token(/!|not /) { :not }
       token(/==|equal to/) { :equal }
       token(/>|greater than/) { :greater }
-      token(/>=|equal or greater than/) { :eqlgreater }
+      token(/>=|equal or greater than|greater than or equal to/) { :eqlgreater }
       token(/<|less than/) { :less }
-      token(/<=|equal or less than/) { :eqllesser }
+      token(/<=|equal or less than|less than or equal to/) { :eqllesser }
       token(/=|is/) { |t| t }
       token(/[a-zA-Z_]+/) { |t| t }
       token(/./) { |t| t }
@@ -87,23 +87,22 @@ class CodEng
 
       rule :arithmetic_expr do
 	      match(:arithmetic_expr, :plus, :term) { |a, b, c| Operators.new(a, b, c) }
-        match('add', :arithmetic_expr, 'to', :term) { |_, a, _, b| Operators.new(a, '+', b) }
-        match(:arithmetic_expr, :minus, :term) { |a, _, b| Operators.new(a, '-', b) }
-        match('subtract', :arithmetic_expr, 'from', :term) { |_, a, _, b| Operators.new(a, '-', b) }
+        match('add', :arithmetic_expr, 'to', :term) { |_, a, _, b| Operators.new(a, :plus, b) }
+        match(:arithmetic_expr, :minus, :term) { |a, b, c| Operators.new(a, b, c) }
+        match('subtract', :arithmetic_expr, 'from', :term) { |_, a, _, b| Operators.new(a, :minus, b) }
         match(:term) { |m| m }
       end
 
       rule :term do
-        match(:term, :mult, :factor) { |a, _, b| a * b }
-        match('multiply', :term, 'by', :factor) { |_, a, _, b| a * b }
-        match(:term, :div, :factor) { |a, _, b| a / b }
-        match(:term, :div, :factor) { |a, _, b| a / b }
-        match('divide', :term, 'by', :factor) { |_, a, _, b| a / b }
+	      match(:term, :mult, :factor) { |a, b, c| Operators.new(a, b, c) }
+        match('multiply', :term, 'by', :factor) { |_, a, _, b| Operators.new(a, :mult, b) }
+	      match(:term, :div, :factor) { |a, b, c| Operators.new(a, b, c) }
+        match('divide', :term, 'by', :factor) { |_, a, _, b| Operators.new(a, :div, b) }
         match(:factor) { |m| m }
       end
 
       rule :factor do
-        match(:exp, :exponent, :factor) { |a, _, b| a**b }
+        match(:exp, :exponent, :factor) { |a, b, c| Operators.new(a, b, c) }
         match(:exp) { |m| m }
       end
 

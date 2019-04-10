@@ -7,6 +7,7 @@ class Reloperators
         @comp_op = comp_op
     end
     def assess
+        case @op
         if @comp_op == :eqlless
             return (@in1 <= @in2)
         elsif @comp_op == :eqlgreater
@@ -17,6 +18,8 @@ class Reloperators
             return (@in1 > @in2)
         elsif @comp_op == :equal
             return (@in1 == @in2)
+        elsif @comp_op == :noteql
+            return (@in1 != @in2)
         elsif @comp_op == :not
             return (!@in1)
         elsif @comp_op == :and
@@ -35,11 +38,13 @@ class Operators
     end
 
     def assess
-        if @op == :plus
-            return (@expr1 + @expr2)
-        elsif @op == '-'
-            return (@expr1 - @expr2)
-	end
+        case @op
+        when :plus return (@expr1 + @expr2)
+        when :minus return (@expr1 - @expr2)
+        when :mult return (@expr1 * @expr2)
+        when :div return (@expr1 / @expr2)
+        when :exponent return (@expr1 ** @expr2)
+	    end
     end
 end
 
