@@ -8,20 +8,36 @@ TODO PRIORITY LIST
 3. everything else
 =end
 class Scope
-    def initialize()
-      @vars
-        
+    def initialize(id, parent=nil)
+        @id, @parent = id, parent
+        @vars = {}
+    end
+
+    def add(var)
+        @vars[var.name.to_sym] = var
+    end
+
+    def get(var_sym)
+      if @vars.has_key?(var_sym)
+          return @vars[var_sym]
+      elsif @parent != nil
+          return @parent.get(var_sym)
+      end
+      raise "Variable '#{var_sym.to_s}' not found in current scope"
+    end
+    
+    def root
+      @parent == nil ? return self : return @parent.root
     end
 
     def assess
-    
+      #Probably a print function?
     end
 end
 
-class Reloperators
+class RelOperators
     def initialize(expr1, op, expr2 = nil)
-        @expr1 = expr1
-        @expr2 = expr2
+        @expr1, @expr2 = expr1, expr2
         @op = op
     end
     def assess
@@ -68,7 +84,7 @@ class VarAssign
     end
 end
 
-class Wholenum
+class WholeNum
     def initialize(num)
 	      @value = num.to_i
     end
@@ -78,7 +94,7 @@ class Wholenum
     end
 end
 
-class Floatnum
+class FloatNum
     def initialize(num)
 	    @value = num.to_f
     end
@@ -87,7 +103,7 @@ class Floatnum
     end
 end
 
-class Charstring
+class CharString
     def initialize(string)
         @string = string
     end
@@ -102,19 +118,19 @@ class List
     end
 end
 
-class Hashtable
+class HashTable
     def initialize(num)
         #TODO
     end
 end
 
-class Forloop
+class ForLoop
     def initialize
 	#TODO
     end
 end
 
-class Whileloop
+class WhileLoop
     def initialize
 	#TODO
     end
