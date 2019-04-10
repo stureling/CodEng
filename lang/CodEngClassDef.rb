@@ -1,23 +1,27 @@
 #!/usr/bin/env ruby
 
 class Reloperators
-    def initialize(in1, comp_op, in2)
+    def initialize(in1, comp_op, in2 = nil)
         @in1 = in1
         @in2 = in2
         @comp_op = comp_op
     end
-    def compare
-        if @comp_op == "<="
+    def assess
+        if @comp_op == :eqlless
             return (@in1 <= @in2)
-        elsif @comp_op == ">="
+        elsif @comp_op == :eqlgreater
             return (@in1 >= @in2)
-        elsif @comp_op == "=="
+        elsif @comp_op == :less
+            return (@in1 < @in2)
+        elsif @comp_op == :greater
+            return (@in1 > @in2)
+        elsif @comp_op == :equal
             return (@in1 == @in2)
-        elsif @comp_op == "!=" || @comp_op == "not"
-            return (@in1 != @in2)
-        elsif @comp_op == "&&" || @comp_op == "and"
+        elsif @comp_op == :not
+            return (!@in1)
+        elsif @comp_op == :and
             return (@in1 && @in2)
-        elsif @comp_op == "||" || @comp_op == "or"
+        elsif @comp_op == :or
             return (@in1 || @in2)
         end
     end
@@ -31,18 +35,11 @@ class Operators
     end
 
     def assess
-        
-    end
-
-class Forloop
-    def initialize
-	#TODO
-    end
-end
-
-class Whileloop
-    def initialize
-	#TODO
+        if @op == :plus
+            return (@expr1 + @expr2)
+        elsif @op == '-'
+            return (@expr1 - @expr2)
+	end
     end
 end
 
@@ -87,3 +84,16 @@ class Hashtable
         #TODO
     end
 end
+
+class Forloop
+    def initialize
+	#TODO
+    end
+end
+
+class Whileloop
+    def initialize
+	#TODO
+    end
+end
+

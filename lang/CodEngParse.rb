@@ -14,7 +14,16 @@ class CodEng
       token(/-|minus/) { :minus }
       token(/\*|times/) { :mult }
       token(/\/|over/) { :div }
-      token(/<=|>=|==|!=|&&|\|\|/) { |t| t } 
+      token(/true/) { :true }
+      token(/false/) { :false }
+      token(/&&|and/) { :and }
+      token(/\|\||or/) { :or }
+      token(/!|not /) { :not }
+      token(/==|equal to/) { :equal }
+      token(/>|greater than/) { :greater }
+      token(/>=|equal or greater than/) { :eqlgreater }
+      token(/<|less than/) { :less }
+      token(/<=|equal or less than/) { :eqllesser }
       token(/=|is/) { |t| t }
       token(/[a-zA-Z_]+/) { |t| t }
       token(/./) { |t| t }
@@ -64,7 +73,7 @@ class CodEng
       end
 
       rule :assign do
-        match(:var, '=', :expr) { |var, _, expr| VarAssign,new(var, expr) }
+        match(:var, '=', :expr) { |var, _, expr| VarAssign.new(var, expr) }
         #match(:prefix, :var, 'is', :expr) { |_, var, _, expr| @vars[var] = expr } #
       end
 
@@ -72,15 +81,15 @@ class CodEng
       end
 
       rule :expr do
-        match(:arithmetic_expr)
         match(:logic_expr)
+        match(:arithmetic_expr)
       end
 
       rule :arithmetic_expr do
-        match(:arithmetic_expr, :plus, :term) { |a, _, b| a + b }
-        match('add', :arithmetic_expr, 'to', :term) { |_, a, _, b| a + b }
-        match(:arithmetic_expr, :minus, :term) { |a, _, b| a - b }
-        match('subtract', :arithmetic_expr, 'from', :term) { |_, a, _, b| a - b }
+	      match(:arithmetic_expr, :plus, :term) { |a, b, c| Operators.new(a, b, c) }
+        match('add', :arithmetic_expr, 'to', :term) { |_, a, _, b| Operators.new(a, '+', b) }
+        match(:arithmetic_expr, :minus, :term) { |a, _, b| Operators.new(a, '-', b) }
+        match('subtract', :arithmetic_expr, 'from', :term) { |_, a, _, b| Operators.new(a, '-', b) }
         match(:term) { |m| m }
       end
 
@@ -113,17 +122,20 @@ class CodEng
       end
 
       rule :logic_expr do
-        match(:logic_expr, '&&', :logic_expr) { |a, b, c| Reloperators.new(a, b, c)}
-        #match(:logic_expr, :comp_op, :logic_expr) { |a, _, c| a && c }
-        #match(:logic_expr, 'or', :logic_expr) { |a, _, c| a || c }
-        #match(:logic_expr, 'and', :logic_expr) { |a, _, c| a && c }
-        #match('not', :logic_expr) { |_, a| !a }
+        match(:logic_expr, :and, :logic_expr) { |a, b, c| Reloperators.new(a, b, c)}
+        match(:logic_expr, :or, :logic_expr) { |a, b, c| Reloperators.new(a, b, c)}
+        match(:not, :logic_expr) { |a, b| Reloperators.new(b, a)}
+        match(:logic_expr, :equal, :logic_expr) { |a, b, c| Reloperators.new(a, b, c)}
+        match(:logic_expr, :greater, :logic_expr) { |a, b, c| Reloperators.new(a, b, c)}
+        match(:logic_expr, :eqlgreater, :logic_expr) { |a, b, c| Reloperators.new(a, b, c)}
+        match(:logic_expr, :less, :logic_expr) { |a, b, c| Reloperators.new(a, b, c)}
+        match(:logic_expr, :eqlless, :logic_expr) { |a, b, c| Reloperators.new(a, b, c)}
         match(:logic_term) { |a| a }
       end
 
       rule :logic_term do
-        match('true') { |_| true }
-        match('false') { |_| false }
+        match(:true) { |_| true }
+        match(:false) { |_| false }
       end
 
     end
