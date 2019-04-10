@@ -82,7 +82,6 @@ class CodEng
 
       rule :expr do
         match(:logic_expr)
-        match(:arithmetic_expr)
       end
 
       rule :arithmetic_expr do
@@ -96,7 +95,6 @@ class CodEng
       rule :term do
         match(:term, :mult, :factor) { |a, _, b| a * b }
         match('multiply', :term, 'by', :factor) { |_, a, _, b| a * b }
-        match(:term, :div, :factor) { |a, _, b| a / b }
         match(:term, :div, :factor) { |a, _, b| a / b }
         match('divide', :term, 'by', :factor) { |_, a, _, b| a / b }
         match(:factor) { |m| m }
@@ -130,6 +128,7 @@ class CodEng
         match(:logic_expr, :eqlgreater, :logic_expr) { |a, b, c| Reloperators.new(a, b, c)}
         match(:logic_expr, :less, :logic_expr) { |a, b, c| Reloperators.new(a, b, c)}
         match(:logic_expr, :eqlless, :logic_expr) { |a, b, c| Reloperators.new(a, b, c)}
+        match(:arithmetic_expr)
         match(:logic_term) { |a| a }
       end
 

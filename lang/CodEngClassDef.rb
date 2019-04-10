@@ -1,28 +1,31 @@
 #!/usr/bin/env ruby
 
+class Scope
+    def initialize()
+        
+    end
+
+    def assess
+    
+    end
+end
+
 class Reloperators
-    def initialize(in1, comp_op, in2 = nil)
-        @in1 = in1
-        @in2 = in2
-        @comp_op = comp_op
+    def initialize(expr1, op, expr2 = nil)
+        @expr1 = expr1
+        @expr2 = expr2
+        @op = op
     end
     def assess
-        if @comp_op == :eqlless
-            return (@in1 <= @in2)
-        elsif @comp_op == :eqlgreater
-            return (@in1 >= @in2)
-        elsif @comp_op == :less
-            return (@in1 < @in2)
-        elsif @comp_op == :greater
-            return (@in1 > @in2)
-        elsif @comp_op == :equal
-            return (@in1 == @in2)
-        elsif @comp_op == :not
-            return (!@in1)
-        elsif @comp_op == :and
-            return (@in1 && @in2)
-        elsif @comp_op == :or
-            return (@in1 || @in2)
+        case @op
+        when :eqlless return (@expr1 <= @expr2)
+        when :eqlgreater return (@expr1 >= @expr2)
+        when :less return (@expr1 < @expr2)
+        when :greater return (@expr1 > @expr2)
+        when:equal return (@expr1 == @expr2)
+        when :not return (!@expr1)
+        when :and return (@expr1 && @expr2)
+        when :or return (@expr1 || @expr2)
         end
     end
 end
@@ -59,17 +62,27 @@ class Wholenum
     def initialize(num)
 	      @value = num.to_i
     end
+
+    def assess
+        return @value
+    end
 end
 
 class Floatnum
     def initialize(num)
 	    @value = num.to_f
     end
+    def assess
+        return @value
+    end
 end
 
 class Charstring
-    def initialize(num)
-	#TODO
+    def initialize(string)
+        @string = string
+    end
+    def assess
+        return @string
     end
 end
 
