@@ -1,7 +1,15 @@
 #!/usr/bin/env ruby
 
+=begin
+TODO PRIORITY LIST
+
+1. Scopes and function def
+2. loops and function call
+3. everything else
+=end
 class Scope
     def initialize()
+      @vars
         
     end
 
@@ -112,3 +120,14 @@ class Whileloop
     end
 end
 
+class Output
+    def initialize
+	#TODO
+    end
+end
+
+class Input
+    def initialize
+	#TODO
+    end
+end
