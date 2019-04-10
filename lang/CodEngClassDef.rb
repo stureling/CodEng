@@ -23,6 +23,17 @@ class Reloperators
     end
 end
 
+class Operators
+    def initialize(expr1, op, expr2)
+        @expr1 = expr1
+        @op = op
+        @expr2 = expr2
+    end
+
+    def assess
+        
+    end
+
 class Forloop
     def initialize
 	#TODO
@@ -35,10 +46,21 @@ class Whileloop
     end
 end
 
+class VarAssign
+    def initialize(name, expr)
+        @name = name
+        @expr = expr
+    end
+
+    def assess
+        #assign the variable
+        #TODO
+    end
+end
 
 class Wholenum
     def initialize(num)
-	    @value = num.to_i
+	      @value = num.to_i
     end
 end
 

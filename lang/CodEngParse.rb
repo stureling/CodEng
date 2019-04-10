@@ -10,12 +10,12 @@ class CodEng
       token(/\s+/)
       token(/-?\d+/) { |t| t.to_i }
       token(/\*\*|to the power of/) { :exponent }
-      token(/\+|plus/) { :plus } #should probs be changed
-      token(/-|minus/) { :minus }     #|
-      token(/\*|times/) { :mult }     #|
-      token(/\/|over/) { :div }       #|
+      token(/\+|plus/) { :plus }
+      token(/-|minus/) { :minus }
+      token(/\*|times/) { :mult }
+      token(/\/|over/) { :div }
       token(/<=|>=|==|!=|&&|\|\|/) { |t| t } 
-      token(/=|is/)                  #<->
+      token(/=|is/) { |t| t }
       token(/[a-zA-Z_]+/) { |t| t }
       token(/./) { |t| t }
 
@@ -64,7 +64,7 @@ class CodEng
       end
 
       rule :assign do
-        #match(:var, '=', :expr) { |var, _, expr| @vars[var] = expr }
+        match(:var, '=', :expr) { |var, _, expr| VarAssign,new(var, expr) }
         #match(:prefix, :var, 'is', :expr) { |_, var, _, expr| @vars[var] = expr } #
       end
 
@@ -113,7 +113,7 @@ class CodEng
       end
 
       rule :logic_expr do
-        match(:logic_expr, '&&', :logic_expr) { |a, b, c| Reloperators.new(a, b, c).compare }
+        match(:logic_expr, '&&', :logic_expr) { |a, b, c| Reloperators.new(a, b, c)}
         #match(:logic_expr, :comp_op, :logic_expr) { |a, _, c| a && c }
         #match(:logic_expr, 'or', :logic_expr) { |a, _, c| a || c }
         #match(:logic_expr, 'and', :logic_expr) { |a, _, c| a && c }
@@ -139,7 +139,7 @@ class CodEng
     if done(str) then
       puts "Bye."
     else
-      puts "=> #{@CodEngParser.parse str}"
+      puts "=> #{@CodEngParser.parse(str).assess}"
       run
     end
   end
