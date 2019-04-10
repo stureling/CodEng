@@ -3,7 +3,6 @@ require 'test/unit'
 
 class TestLanguage < Test::Unit::TestCase
     def test_relops
-<<<<<<< HEAD
         a = Reloperators.new(3, :less, 5)
         assert_equal(a.assess, true)
         a = Reloperators.new(10, :less, 5)
@@ -36,41 +35,5 @@ class TestLanguage < Test::Unit::TestCase
         assert_equal(a.assess, true)
         a = Reloperators.new(true, :or, true)
         assert_equal(a.assess, true)
-=======
-        a = Reloperators.new(3, '<=', 5)
-        assert.equal(a.assess, true)
-        a = Reloperators.new(10, '<=', 5)
-        assert.equal(a.assess(), false)
-        a = Reloperators.new(3, '>=', 5)
-        assert.equal(a.assess(), false)
-        a = Reloperators.new(3, '==', 5)
-        assert.equal(a.assess(), false)
-        a = Reloperators.new(3, '!=', 5)
-        assert.equal(a.assess(), true)
-        a = Reloperators.new(3, '&&', 3)
-        assert.equal(a.assess(), true)
-        a = Reloperators.new(3, 'and', 3)
-        assert.equal(a.assess(), true)
-        a = Reloperators.new(true, '&&', true)
-        assert.equal(a.assess(), true)
-        a = Reloperators.new(true, '&&', false)
-        assert.equal(a.assess(), false)
-        a = Reloperators.new(false, 'and', false)
-        assert.equal(a.assess(), true)
-        a = Reloperators.new(false, 'or', false)
-        assert.equal(a.assess(), false)
-        a = Reloperators.new(false, '||', false)
-        assert.equal(a.assess(), false)
-        a = Reloperators.new(true, 'or', false)
-        assert.equal(a.assess(), true)
-        a = Reloperators.new(true, '||', true)
-        assert.equal(a.assess(), true)
-        a = Reloperators.new(false, '!=', false)
-        assert.equal(a.assess(), false)
-        a = Reloperators.new(false, '!=', true)
-        assert.equal(a.assess(), true)
-        a = Reloperators.new(false, 'not', true)
-        assert.equal(a.assess(), true)
->>>>>>> 6382322f0373d98afaab5ce0614868ba74d1cb7e
     end
 end
