@@ -13,6 +13,8 @@ class CEOperator
 end
 
 class CEObject
+    def name
+    end
 end
 
 class CENil < CEObject
@@ -37,7 +39,7 @@ class CENumber < CEObject
       if object.is_a?(CENumber)
           return self.assess + object.assess
       else
-        raise "#{object.class} #{object.name} is of wrong type, should be integer or float"
+          raise "#{object.class} #{object.name} is of wrong type, should be integer or float"
       end
   end
 
@@ -45,30 +47,34 @@ class CENumber < CEObject
       if object.is_a?(CENumber)
           return self.assess - object.assess
       else
-        raise "#{object.class} #{object.name} is of wrong type, should be integer or float"
+          raise "#{object.class} #{object.name} is of wrong type, should be integer or float"
       end
   end
 
   def multiply(object)
       if object.is_a?(CENumber)
-        return self.assess.to_f * object.assess.to_f
+          return self.assess.to_f * object.assess.to_f
       else
-        raise "#{object.class} #{object.name} is of wrong type, should be integer or float"
+          raise "#{object.class} #{object.name} is of wrong type, should be integer or float"
       end
   end
   def divide(object)
       if object.is_a?(CENumber)
-        return self.assess.to_f / object.assess.to_f
+          if object.is_a?(CEFloat)
+              self.assess.to_f / object.assess.to_f
+          else
+              return self.assess / object.assess
+          end
       else
-        raise "#{object.class} #{object.name} is of wrong type, should be integer or float"
+          raise "#{object} is of wrong type, should be integer or float"
       end
   end
 
   def power(object)
       if object.is_a?(CENumber)
-        return self.assess.to_f ** object.assess.to_f
+          return self.assess.to_f ** object.assess.to_f
       else
-        raise "#{object.class} #{object.name} is of wrong type, should be integer or float"
+          raise "#{object.class} #{object.name} is of wrong type, should be integer or float"
       end
   end
 end
