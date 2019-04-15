@@ -73,7 +73,7 @@ class CodEng
       end
 
       rule :assign do
-        match(:var, '=', :expr) { |var, _, expr| VarAssign.new(var, expr) }
+        match(:var, '=', :expr) { |var, _, expr| Variable.new(var, expr) }
         #match(:prefix, :var, 'is', :expr) { |_, var, _, expr| @vars[var] = expr } #
       end
 
@@ -85,23 +85,23 @@ class CodEng
       end
 
       rule :arithmetic_expr do
-	      match(:arithmetic_expr, :plus, :term) { |a, b, c| Operators.new(a, b, c) }
-        match('add', :arithmetic_expr, 'to', :term) { |_, a, _, b| Operators.new(a, :plus, b) }
-        match(:arithmetic_expr, :minus, :term) { |a, b, c| Operators.new(a, b, c) }
-        match('subtract', :arithmetic_expr, 'from', :term) { |_, a, _, b| Operators.new(a, :minus, b) }
+	      match(:arithmetic_expr, :plus, :term) { |a, b, c| Operation.new(a, b, c) }
+        match('add', :arithmetic_expr, 'to', :term) { |_, a, _, b| Operation.new(a, :plus, b) }
+        match(:arithmetic_expr, :minus, :term) { |a, b, c| Operation.new(a, b, c) }
+        match('subtract', :arithmetic_expr, 'from', :term) { |_, a, _, b| Operation.new(a, :minus, b) }
         match(:term) { |m| m }
       end
 
       rule :term do
-	      match(:term, :mult, :factor) { |a, b, c| Operators.new(a, b, c) }
-        match('multiply', :term, 'by', :factor) { |_, a, _, b| Operators.new(a, :mult, b) }
-	      match(:term, :div, :factor) { |a, b, c| Operators.new(a, b, c) }
-        match('divide', :term, 'by', :factor) { |_, a, _, b| Operators.new(a, :div, b) }
+	      match(:term, :mult, :factor) { |a, b, c| Operation.new(a, b, c) }
+        match('multiply', :term, 'by', :factor) { |_, a, _, b| Operation.new(a, :mult, b) }
+	      match(:term, :div, :factor) { |a, b, c| Operation.new(a, b, c) }
+        match('divide', :term, 'by', :factor) { |_, a, _, b| Operation.new(a, :div, b) }
         match(:factor) { |m| m }
       end
 
       rule :factor do
-        match(:exp, :exponent, :factor) { |a, b, c| Operators.new(a, b, c) }
+        match(:exp, :exponent, :factor) { |a, b, c| Operation.new(a, b, c) }
         match(:exp) { |m| m }
       end
 
@@ -120,14 +120,14 @@ class CodEng
       end
 
       rule :logic_expr do
-        match(:logic_expr, :and, :logic_expr) { |a, b, c| Reloperators.new(a, b, c)}
-        match(:logic_expr, :or, :logic_expr) { |a, b, c| Reloperators.new(a, b, c)}
-        match(:not, :logic_expr) { |a, b| Reloperators.new(b, a)}
-        match(:logic_expr, :equal, :logic_expr) { |a, b, c| Reloperators.new(a, b, c)}
-        match(:logic_expr, :greater, :logic_expr) { |a, b, c| Reloperators.new(a, b, c)}
-        match(:logic_expr, :eqlgreater, :logic_expr) { |a, b, c| Reloperators.new(a, b, c)}
-        match(:logic_expr, :less, :logic_expr) { |a, b, c| Reloperators.new(a, b, c)}
-        match(:logic_expr, :eqlless, :logic_expr) { |a, b, c| Reloperators.new(a, b, c)}
+        match(:logic_expr, :and, :logic_expr) { |a, b, c| RelOperation.new(a, b, c)}
+        match(:logic_expr, :or, :logic_expr) { |a, b, c| RelOperation.new(a, b, c)}
+        match(:not, :logic_expr) { |a, b| RelOperation.new(b, a)}
+        match(:logic_expr, :equal, :logic_expr) { |a, b, c| RelOperation.new(a, b, c)}
+        match(:logic_expr, :greater, :logic_expr) { |a, b, c| RelOperation.new(a, b, c)}
+        match(:logic_expr, :eqlgreater, :logic_expr) { |a, b, c| RelOperation.new(a, b, c)}
+        match(:logic_expr, :less, :logic_expr) { |a, b, c| RelOperation.new(a, b, c)}
+        match(:logic_expr, :eqlless, :logic_expr) { |a, b, c| RelOperation.new(a, b, c)}
         match(:arithmetic_expr)
         match(:logic_term) { |a| a }
       end

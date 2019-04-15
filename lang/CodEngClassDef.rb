@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+require_relative 'CodEngRuntime.rb'
 
 =begin
 TODO PRIORITY LIST
@@ -7,35 +8,8 @@ TODO PRIORITY LIST
 2. loops and function call
 3. everything else
 =end
-class Scope
-    def initialize(id, parent=nil)
-        @id, @parent = id, parent
-        @vars = {}
-    end
 
-    def add(var)
-        @vars[var.name.to_sym] = var
-    end
-
-    def get(var_sym)
-      if @vars.has_key?(var_sym)
-          return @vars[var_sym]
-      elsif @parent != nil
-          return @parent.get(var_sym)
-      end
-      raise "Variable '#{var_sym.to_s}' not found in current scope"
-    end
-    
-    def root
-      @parent == nil ? return self : return @parent.root
-    end
-
-    def assess
-      #Probably a print function?
-    end
-end
-
-class RelOperators
+class RelOperation
     def initialize(expr1, op, expr2 = nil)
         @expr1, @expr2 = expr1, expr2
         @op = op
@@ -54,7 +28,7 @@ class RelOperators
     end
 end
 
-class Operators
+class Operation
     def initialize(expr1, op, expr2)
         @expr1 = expr1
         @op = op
@@ -72,7 +46,7 @@ class Operators
     end
 end
 
-class VarAssign
+class Variable
     def initialize(name, expr)
         @name = name
         @expr = expr
