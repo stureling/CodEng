@@ -1,5 +1,4 @@
 #!/usr/bin/env ruby
-require_relative 'CodEngRuntime.rb'
 
 =begin
 TODO PRIORITY LIST
@@ -8,43 +7,6 @@ TODO PRIORITY LIST
 2. loops and function call
 3. everything else
 =end
-
-class RelOperation
-    def initialize(expr1, op, expr2 = nil)
-        @expr1, @expr2 = expr1, expr2
-        @op = op
-    end
-    def assess
-        case @op
-        when :eqlless then return (@expr1 <= @expr2)
-        when :eqlgreater then return (@expr1 >= @expr2)
-        when :less then return (@expr1 < @expr2)
-        when :greater then return (@expr1 > @expr2)
-        when :equal then return (@expr1 == @expr2)
-        when :not then return (!@expr1)
-        when :and then return (@expr1 && @expr2)
-        when :or then return (@expr1 || @expr2)
-        end
-    end
-end
-
-class Operation
-    def initialize(expr1, op, expr2)
-        @expr1 = expr1
-        @op = op
-        @expr2 = expr2
-    end
-
-    def assess
-        case @op
-        when :plus then return (@expr1 + @expr2)
-        when :minus then return (@expr1 - @expr2)
-        when :mult then return (@expr1 * @expr2)
-        when :div then return (@expr1 / @expr2)
-        when :exponent then return (@expr1 ** @expr2)
-        end
-    end
-end
 
 class Variable
     def initialize(name, expr)
