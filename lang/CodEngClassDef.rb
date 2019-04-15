@@ -9,56 +9,45 @@ TODO PRIORITY LIST
 3. everything else
 =end
 
-class RelOperation
-    def initialize(expr1, op, expr2 = nil)
-        @expr1, @expr2 = expr1, expr2
-        @op = op
-    end
-    def assess
-        case @op
-        when :eqlless then return (@expr1 <= @expr2)
-        when :eqlgreater then return (@expr1 >= @expr2)
-        when :less then return (@expr1 < @expr2)
-        when :greater then return (@expr1 > @expr2)
-        when :equal then return (@expr1 == @expr2)
-        when :not then return (!@expr1)
-        when :and then return (@expr1 && @expr2)
-        when :or then return (@expr1 || @expr2)
-        end
-    end
+
+class CEOperator
+
 end
 
-class Operation
-    def initialize(expr1, op, expr2)
-        @expr1 = expr1
-        @op = op
-        @expr2 = expr2
-    end
-
-    def assess
-        case @op
-        when :plus then return (@expr1 + @expr2)
-        when :minus then return (@expr1 - @expr2)
-        when :mult then return (@expr1 * @expr2)
-        when :div then return (@expr1 / @expr2)
-        when :exponent then return (@expr1 ** @expr2)
-        end
-    end
+class CEObject
 end
 
-class Variable
+class CENil < CEObject
+end
+
+class CEVariable < CEObject
     def initialize(name, expr)
         @name = name
         @expr = expr
     end
 
     def assess
-        #assign the variable
-        #TODO
+    end
+
+    def value
+        return expr
     end
 end
 
-class WholeNum
+class CENumber < CEObject
+=begin
+  def add()
+
+  end
+
+  def div(divider)
+      if divider.type?(CEFloat)
+      end
+  end
+=end
+end
+
+class CEInteger < CENumber
     def initialize(num)
 	      @value = num.to_i
     end
@@ -68,7 +57,7 @@ class WholeNum
     end
 end
 
-class FloatNum
+class CEFloat < CENumber
     def initialize(num)
 	    @value = num.to_f
     end
@@ -77,47 +66,11 @@ class FloatNum
     end
 end
 
-class CharString
+class CEString < CEObject
     def initialize(string)
         @string = string
     end
     def assess
         return @string
-    end
-end
-
-class List
-    def initialize(num)
-	#TODO
-    end
-end
-
-class HashTable
-    def initialize(num)
-        #TODO
-    end
-end
-
-class ForLoop
-    def initialize
-	#TODO
-    end
-end
-
-class WhileLoop
-    def initialize
-	#TODO
-    end
-end
-
-class Output
-    def initialize
-	#TODO
-    end
-end
-
-class Input
-    def initialize
-	#TODO
     end
 end
