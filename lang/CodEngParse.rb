@@ -1,9 +1,11 @@
 #!/usr/bin/env ruby
 
 require_relative 'rdparse.rb'
-require_relative 'CodEngClassDef.rb'
+require_relative 'CodEngNodes.rb'
 
 class CodEng
+
+  @@root_scope = CEScope.new('root')
 
   def initialize
     @CodEngParser = Parser.new( "CodEng") do
@@ -29,15 +31,15 @@ class CodEng
       token(/./) { |t| t }
 
 
-      start :block do
+      start :program do
+        match(:statements).each { |m| m.assess } #assess all statements in the list
         #match('start', :statements, 'stop') { |_, m, _| m }
-        match(:statements) { |m| m}
         #match(start, :statements, :block, stop) { |_, a, b, _| a, b }
       end
       
       rule :statements do
-        match(:statements, :statment) { |m| m }
-        match(:statment) { |m| m }
+        match(:statements, :statment) { |master_list, list| master_list.concat(list) }
+        match(:statment) { |m| [m] }
       end
 
       rule :statment do
@@ -85,23 +87,23 @@ class CodEng
       end
 
       rule :arithmetic_expr do
-	      match(:arithmetic_expr, :plus, :term) { |a, b, c| Operation.new(a, b, c) }
-        match('add', :arithmetic_expr, 'to', :term) { |_, a, _, b| Operation.new(a, :plus, b) }
-        match(:arithmetic_expr, :minus, :term) { |a, b, c| Operation.new(a, b, c) }
-        match('subtract', :arithmetic_expr, 'from', :term) { |_, a, _, b| Operation.new(a, :minus, b) }
+	      match(:arithmetic_expr, :plus, :term) { |a, b, c| CEArithmeticOpNode.new(a, b, c) }
+        match('add', :arithmetic_expr, 'to', :term) { |_, a, _, b| CEArithmaticOpNode.new(a, :plus, b) }
+        match(:arithmetic_expr, :minus, :term) { |a, b, c| CEArithmaticOpNode.new(a, b, c) }
+        match('subtract', :arithmetic_expr, 'from', :term) { |_, a, _, b| CEArithmaticOpNode.new(a, :minus, b) }
         match(:term) { |m| m }
       end
 
       rule :term do
-	      match(:term, :mult, :factor) { |a, b, c| Operation.new(a, b, c) }
-        match('multiply', :term, 'by', :factor) { |_, a, _, b| Operation.new(a, :mult, b) }
-	      match(:term, :div, :factor) { |a, b, c| Operation.new(a, b, c) }
-        match('divide', :term, 'by', :factor) { |_, a, _, b| Operation.new(a, :div, b) }
+	      match(:term, :mult, :factor) { |a, b, c| CEArithmaticOpNode.new(a, b, c) }
+        match('multiply', :term, 'by', :factor) { |_, a, _, b| CEArithmaticOpNode.new(a, :mult, b) }
+	      match(:term, :div, :factor) { |a, b, c| CEArithmaticOpNode.new(a, b, c) }
+        match('divide', :term, 'by', :factor) { |_, a, _, b| CEArithmaticOpNode.new(a, :div, b) }
         match(:factor) { |m| m }
       end
 
       rule :factor do
-        match(:exp, :exponent, :factor) { |a, b, c| Operation.new(a, b, c) }
+        match(:exp, :exponent, :factor) { |a, b, c| CEArithmaticOpNode.new(a, b, c) }
         match(:exp) { |m| m }
       end
 
@@ -116,18 +118,19 @@ class CodEng
       end
 
       rule :num do
-        match(Integer) { |m| m }
+        match(Integer) { |m| CEInteger.new(m)  }
+        match(Float) { |m| CEFloat.new(m)  }
       end
 
       rule :logic_expr do
-        match(:logic_expr, :and, :logic_expr) { |a, b, c| RelOperation.new(a, b, c)}
-        match(:logic_expr, :or, :logic_expr) { |a, b, c| RelOperation.new(a, b, c)}
-        match(:not, :logic_expr) { |a, b| RelOperation.new(b, a)}
-        match(:logic_expr, :equal, :logic_expr) { |a, b, c| RelOperation.new(a, b, c)}
-        match(:logic_expr, :greater, :logic_expr) { |a, b, c| RelOperation.new(a, b, c)}
-        match(:logic_expr, :eqlgreater, :logic_expr) { |a, b, c| RelOperation.new(a, b, c)}
-        match(:logic_expr, :less, :logic_expr) { |a, b, c| RelOperation.new(a, b, c)}
-        match(:logic_expr, :eqlless, :logic_expr) { |a, b, c| RelOperation.new(a, b, c)}
+        match(:logic_expr, :and, :logic_expr) { |a, b, c| RelCEArithmaticOpNode.new(a, b, c)}
+        match(:logic_expr, :or, :logic_expr) { |a, b, c| RelCEArithmaticOpNode.new(a, b, c)}
+        match(:not, :logic_expr) { |a, b| RelCEArithmaticOpNode.new(b, a)}
+        match(:logic_expr, :equal, :logic_expr) { |a, b, c| RelCEArithmaticOpNode.new(a, b, c)}
+        match(:logic_expr, :greater, :logic_expr) { |a, b, c| RelCEArithmaticOpNode.new(a, b, c)}
+        match(:logic_expr, :eqlgreater, :logic_expr) { |a, b, c| RelCEArithmaticOpNode.new(a, b, c)}
+        match(:logic_expr, :less, :logic_expr) { |a, b, c| RelCEArithmaticOpNode.new(a, b, c)}
+        match(:logic_expr, :eqlless, :logic_expr) { |a, b, c| RelCEArithmaticOpNode.new(a, b, c)}
         match(:arithmetic_expr)
         match(:logic_term) { |a| a }
       end

@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
-class Scope
-    def initialize(id, parent=nil)
+
+class CEScope
+    def initialize(name, parent=nil)
         @name, @parent = name, parent
         @vars = {}
     end
@@ -13,9 +14,9 @@ class Scope
       if @vars.has_key?(var_name)
           return @vars[var_name]
       elsif @parent != nil
-          return @parent.get(var_sym)
+          return @parent.get(var_name)
       end
-      raise "Variable '#{var_sym.to_s}' not found in current scope"
+      raise "Variable '#{var_name.to_s}' not found in current scope"
     end
     
     def root

@@ -33,16 +33,21 @@ class CEVariable < CEObject
 end
 
 class CENumber < CEObject
-=begin
-  def add()
-
+  def add(object)
+      if object.is_a?(CENumber)
+          return self.assess + object.assess
+      else
+        raise "#{object.class} #{object.name} is of wrong type, should be integer or float"
+      end
   end
 
   def div(divider)
-      if divider.type?(CEFloat)
+      if object.is_a?(CENumber)
+          return self.assess + object.assess
+      else
+        raise "#{object.class} #{object.name} is of wrong type, should be integer or float"
       end
   end
-=end
 end
 
 class CEInteger < CENumber
