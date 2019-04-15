@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 class Scope
     def initialize(id, parent=nil)
-        @id, @parent = id, parent
+        @name, @parent = name, parent
         @vars = {}
     end
 

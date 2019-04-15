@@ -8,19 +8,44 @@ TODO PRIORITY LIST
 3. everything else
 =end
 
-class Variable
+class CEOperator
+
+end
+
+class CEObject
+end
+
+class CENil < CEObject
+end
+
+class CEVariable < CEObject
     def initialize(name, expr)
         @name = name
         @expr = expr
     end
 
     def assess
-        #assign the variable
-        #TODO
+    end
+
+    def value
+        return expr
     end
 end
 
-class WholeNum
+class CENumber < CEObject
+=begin
+  def add()
+
+  end
+
+  def div(divider)
+      if divider.type?(CEFloat)
+      end
+  end
+=end
+end
+
+class CEInteger < CENumber
     def initialize(num)
 	      @value = num.to_i
     end
@@ -30,7 +55,7 @@ class WholeNum
     end
 end
 
-class FloatNum
+class CEFloat < CENumber
     def initialize(num)
 	    @value = num.to_f
     end
@@ -39,47 +64,11 @@ class FloatNum
     end
 end
 
-class CharString
+class CEString < CEObject
     def initialize(string)
         @string = string
     end
     def assess
         return @string
-    end
-end
-
-class List
-    def initialize(num)
-	#TODO
-    end
-end
-
-class HashTable
-    def initialize(num)
-        #TODO
-    end
-end
-
-class ForLoop
-    def initialize
-	#TODO
-    end
-end
-
-class WhileLoop
-    def initialize
-	#TODO
-    end
-end
-
-class Output
-    def initialize
-	#TODO
-    end
-end
-
-class Input
-    def initialize
-	#TODO
     end
 end
