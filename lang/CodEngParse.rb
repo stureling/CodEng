@@ -19,6 +19,7 @@ class CodEng
       token(/&&|and/) { :and }
       token(/\|\||or/) { :or }
       token(/!|not /) { :not }
+      token(/!=|not equal to/) { :notequal }
       token(/==|equal to/) { :equal }
       token(/>|greater than/) { :greater }
       token(/>=|equal or greater than|greater than or equal to/) { :eqlgreater }
