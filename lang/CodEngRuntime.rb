@@ -20,7 +20,7 @@ class CEScope
     end
     
     def root
-      @parent == nil ? return self : return @parent.root
+      #@parent == nil ? return self : return @parent.root
     end
 
     def assess

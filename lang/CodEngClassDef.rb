@@ -41,9 +41,32 @@ class CENumber < CEObject
       end
   end
 
-  def div(divider)
+  def subtract(object)
       if object.is_a?(CENumber)
-          return self.assess + object.assess
+          return self.assess - object.assess
+      else
+        raise "#{object.class} #{object.name} is of wrong type, should be integer or float"
+      end
+  end
+
+  def multiply(object)
+      if object.is_a?(CENumber)
+        return self.assess.to_f * object.assess.to_f
+      else
+        raise "#{object.class} #{object.name} is of wrong type, should be integer or float"
+      end
+  end
+  def divide(object)
+      if object.is_a?(CENumber)
+        return self.assess.to_f / object.assess.to_f
+      else
+        raise "#{object.class} #{object.name} is of wrong type, should be integer or float"
+      end
+  end
+
+  def power(object)
+      if object.is_a?(CENumber)
+        return self.assess.to_f ** object.assess.to_f
       else
         raise "#{object.class} #{object.name} is of wrong type, should be integer or float"
       end

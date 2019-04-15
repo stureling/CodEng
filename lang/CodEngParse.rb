@@ -21,6 +21,7 @@ class CodEng
       token(/&&|and/) { :and }
       token(/\|\||or/) { :or }
       token(/!|not /) { :not }
+      token(/!=|not equal to/) { :notequal }
       token(/==|equal to/) { :equal }
       token(/>|greater than/) { :greater }
       token(/>=|equal or greater than|greater than or equal to/) { :eqlgreater }
@@ -32,14 +33,14 @@ class CodEng
 
 
       start :program do
-        match(:statements).each { |m| m.assess } #assess all statements in the list
+        match(:statements) { |m| m.assess } #assess all statements in the list
         #match('start', :statements, 'stop') { |_, m, _| m }
         #match(start, :statements, :block, stop) { |_, a, b, _| a, b }
       end
       
       rule :statements do
         match(:statements, :statment) { |master_list, list| master_list.concat(list) }
-        match(:statment) { |m| [m] }
+        match(:statment) { |m| m }
       end
 
       rule :statment do
@@ -87,7 +88,7 @@ class CodEng
       end
 
       rule :arithmetic_expr do
-	      match(:arithmetic_expr, :plus, :term) { |a, b, c| CEArithmeticOpNode.new(a, b, c) }
+	      match(:arithmetic_expr, :plus, :term) { |a, b, c| CEAddSubOpNode.new(a, b, c) }
         match('add', :arithmetic_expr, 'to', :term) { |_, a, _, b| CEArithmaticOpNode.new(a, :plus, b) }
         match(:arithmetic_expr, :minus, :term) { |a, b, c| CEArithmaticOpNode.new(a, b, c) }
         match('subtract', :arithmetic_expr, 'from', :term) { |_, a, _, b| CEArithmaticOpNode.new(a, :minus, b) }
@@ -153,7 +154,7 @@ class CodEng
     if done(str) then
       puts "Bye."
     else
-      puts "=> #{@CodEngParser.parse(str).assess}"
+      puts "=> #{@CodEngParser.parse(str)}"
       run
     end
   end
