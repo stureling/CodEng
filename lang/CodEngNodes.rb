@@ -47,7 +47,7 @@ class CEExponentNode
     end
 
     def assess
-        @expr1 ** @expr2
+        return (@expr1.power(@expr2))
     end
 end
 
@@ -59,8 +59,8 @@ class CEMultDivOpNode
 
     def assess
         case @op
-        when :mult then return (@expr1 * @expr2)
-        when :div then return (@expr1 / @expr2)
+        when :mult then return (@expr1.multiply(@expr2))
+        when :div then return (@expr1.divide(@expr2))
         end
     end
 end
@@ -75,9 +75,6 @@ class CEAddSubOpNode
         case @op
         when :plus then return (@expr1.add(@expr2))
         when :minus then return (@expr1.subtract(@expr2))
-        when :mult then return (@expr1.multiply(@expr2))
-        when :div then return (@expr1.divide(@expr2))
-        when :exponent then return (@expr1.power(@expr2))
         end
     end
 end

@@ -33,6 +33,8 @@ class CEVariable < CEObject
 end
 
 class CENumber < CEObject
+  #Inherit from CEInt and CEFloat to see if it is a float or int
+  #So we know if the return is int or float for multi, div and exp?
   def add(object)
       if object.is_a?(CENumber)
           return self.assess + object.assess
