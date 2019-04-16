@@ -10,6 +10,7 @@ class CodEng
   def initialize
     @CodEngParser = Parser.new( "CodEng") do
       token(/\s+/)
+      token(/-?\d+\.\d+/) { |t| t.to_f }
       token(/-?\d+/) { |t| t.to_i }
       token(/\*\*|to the power of/) { :exponent }
       token(/\+|plus/) { :plus }
