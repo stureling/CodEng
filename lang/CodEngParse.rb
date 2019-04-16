@@ -119,6 +119,7 @@ class CodEng
 
       rule :factor do
         match(:exp, :exponent, :factor) { |a, b, c| CEArithmeticOpNode.new(a, b, c) }
+        match(:not, :exp) { |_, m| CENotNode.new(m)}
         match(:exp) { |m| m }
       end
 
@@ -129,7 +130,7 @@ class CodEng
       end
 
       rule :var do
-        match(/[a-zA-z]{1}\w*/) { |var| CEVariable.new(var) }
+        match(/[a-zA-z]{1}\w*/) { |var| CEVariable.new(var,) }
         match(:num)
       end
 
@@ -139,8 +140,8 @@ class CodEng
       end
 
       rule :bool_const do
-        match(:true) { |m| CEBool.new(m) }
-        match(:false) { |m| CEBool.new(m) }
+        match(:true) { |_| CEBool.new(true) }
+        match(:false) { |_| CEBool.new(false) }
       end
 
     end

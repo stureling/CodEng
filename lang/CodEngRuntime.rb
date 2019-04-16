@@ -1,7 +1,33 @@
-#!/usr/bin/env ruby
+#!/usr/bin/env 
 
 #HELPER FUNCTIONS
 def assert_boolvalue(object)
+  if object.class == CEInteger
+    if object.value != 0
+      return true
+    else
+      return false
+    end
+  elsif object.class == CEFloat
+    if object.value != 0
+      return true
+    else
+      return false
+    end
+  elsif object.class == CEBool
+    if object.value == true
+      return true
+    else
+      return false
+    end
+  elsif  object.class == TrueClass
+    return true
+  elsif  object.class == FalseClass
+    return false
+  else
+    raise "Invalid type #{object}, expected CEBool, 
+    CEFloat, CEInteger, TrueClass or FalseClass"
+  end
 end
 
 

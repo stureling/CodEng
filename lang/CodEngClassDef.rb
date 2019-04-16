@@ -66,11 +66,7 @@ end
 
 class CEBool < CEObject
   def initialize(object)
-    if assert_truthieness(object) == true
-      @boolvalue = true
-    else 
-      @boolvalue = false
-    end
+    @boolvalue = assert_boolvalue(object)
   end
 
   def assess(scope)
