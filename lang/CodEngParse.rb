@@ -139,8 +139,8 @@ class CodEng
       end
 
       rule :bool_const do
-        match(:true) { |m| CEBool.new(m) }
-        match(:false) { |m| CEBool.new(m) }
+        match(:true) { |_| CEBool.new(true) }
+        match(:false) { |_| CEBool.new(false) }
       end
 
     end
