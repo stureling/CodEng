@@ -31,51 +31,6 @@ class CEVariable < CEObject
 end
 
 class CENumber < CEObject
-  def add(object)
-    if object.is_a?(CENumber)
-      new_value = self.value + object.value
-      if new_value.class == Integer then return CEInteger.new(new_value)
-      elsif new_value.class == Float then return CEFloat.new(new_value)
-      end
-    else
-      raise "#{object.class} #{object.name} is of wrong type, should be integer or float"
-    end
-  end
-
-  def subtract(object)
-    if object.is_a?(CENumber)
-      return self.assess - object.assess
-    else
-      raise "#{object.class} #{object.name} is of wrong type, should be integer or float"
-    end
-  end
-
-  def multiply(object)
-    if object.is_a?(CENumber)
-      return self.assess * object.assess
-    else
-       raise "#{object.class} #{object.name} is of wrong type, should be integer or float"
-    end
-  end
-
-  def divide(object)
-    if object.is_a?(CENumber)
-      type = object.class
-      if type == Float then return CEFloat.new(self.value.to_f / object.value)
-      elsif type == Integer then return CEInteger.new(self.value / object.value)
-      end
-    else
-      raise "#{object} is of wrong type, should be integer or float"
-    end
-  end
-
-  def power(object)
-    if object.is_a?(CENumber)
-      return self.assess.to_f ** object.assess.to_f
-    else
-      raise "#{object.class} #{object.name} is of wrong type, should be integer or float"
-    end
-  end
 end
 
 class CEInteger < CENumber
@@ -100,25 +55,32 @@ class CEFloat < CENumber
 end
 
 class CEString < CEObject
-    def initialize(string)
-        @string = string
-    end
-    def assess
-        return @string
-    end
+  def initialize(string)
+    @string = string
+  end
+
+  def assess
+    return @string
+  end
 end
 
 class CEBool < CEObject
-    def initialize(bool_sym)
-        if bool_sym == :true
-            @boolvalue = true
-        elsif bool_sym == :false
-            @boolvalue = false
-        end
+  def initialize(bool_sym)
+    if bool_sym == :true
+      @boolvalue = true
+    elsif bool_sym == :false
+      @boolvalue = false
     end
-    def assess
-        return @boolvalue
-    end
+  end
+
+  def assess
+    return self
+  end
+  
+  def value
+    return @boolvalue
+  end
+
 end
 
 #x = CEBool.new(:true)
