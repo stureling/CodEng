@@ -22,11 +22,11 @@ class CEVariable < CEObject
     @expr = expr
   end
 
-  def assess
+  def assess(scope)
   end
 
   def value
-    return expr.assess
+    return expr.assess(scope)
   end
 end
 
@@ -39,7 +39,7 @@ class CEInteger < CENumber
     @value = num.to_i
   end
 
-  def assess
+  def assess(scope)
     return self
   end
 end
@@ -49,7 +49,7 @@ class CEFloat < CENumber
     def initialize(num)
 	    @value = num.to_f
     end
-    def assess
+    def assess(scope)
         return self
     end
 end
@@ -59,7 +59,7 @@ class CEString < CEObject
     @string = string
   end
 
-  def assess
+  def assess(scope)
     return @string
   end
 end
@@ -73,7 +73,7 @@ class CEBool < CEObject
     end
   end
 
-  def assess
+  def assess(scope)
     return self
   end
   
@@ -84,4 +84,4 @@ class CEBool < CEObject
 end
 
 #x = CEBool.new(:true)
-#puts x.assess
+#puts x.assess(scope)

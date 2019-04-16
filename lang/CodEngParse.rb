@@ -32,9 +32,8 @@ class CodEng
       token(/[a-zA-Z_]+/) { |t| t }
       token(/./) { |t| t }
 
-
       start :program do
-        match(:statements) { |m| m.assess } #assess all statements in the list
+        match(:statements) { |m| m.assess(@@root_scope) } #assess all statements in the list
         #match('start', :statements, 'stop') { |_, m, _| m }
         #match(start, :statements, :block, stop) { |_, a, b, _| a, b }
       end
@@ -67,7 +66,7 @@ class CodEng
       end
 
       rule :assign do
-        match(:var, '=', :expr) { |var, _, expr| Variable.new(var, expr) }
+        match(:var, '=', :expr) { |var, _, expr| CEVariable.set(expr) }
         #match(:prefix, :var, 'is', :expr) { |_, var, _, expr| @vars[var] = expr } #
       end
 
@@ -89,8 +88,8 @@ class CodEng
       end
 
       rule :compare_equality do
-        match(:compare_equality, :equal ,:compare_relops) { |a, b, c| CERelEqNoteqNode.new(a, b, c) }
-        match(:compare_equality, :notequal ,:compare_relops) { |a, b, c| CERelEqNoteqNode.new(a, b, c) }
+        match(:compare_equality, :equal ,:compare_relops) { |a, b, c| CERelationOpNode.new(a, b, c) }
+        match(:compare_equality, :notequal ,:compare_relops) { |a, b, c| CERelationOpNode.new(a, b, c) }
         match(:compare_relops) { |m| m }
       end
 
@@ -103,23 +102,23 @@ class CodEng
       end
 
       rule :arithmetic_expr do
-	      match(:arithmetic_expr, :plus, :term) { |a, b, c| CEAddSubOpNode.new(a, b, c) }
-        match('add', :arithmetic_expr, 'to', :term) { |_, a, _, b| CEAddSubOpNode.new(a, :plus, b) }
-        match(:arithmetic_expr, :minus, :term) { |a, b, c| CEAddSubOpNode.new(a, b, c) }
-        match('subtract', :arithmetic_expr, 'from', :term) { |_, a, _, b| CEAddSubOpNode.new(a, :minus, b) }
+	      match(:arithmetic_expr, :plus, :term) { |a, b, c| CEArithmeticOpNode.new(a, b, c) }
+        match('add', :arithmetic_expr, 'to', :term) { |_, a, _, b| CEArithmeticOpNode.new(a, :plus, b) }
+        match(:arithmetic_expr, :minus, :term) { |a, b, c| CEArithmeticOpNode.new(a, b, c) }
+        match('subtract', :arithmetic_expr, 'from', :term) { |_, a, _, b| CEArithmeticOpNode.new(a, :minus, b) }
         match(:term) { |m| m }
       end
 
       rule :term do
-	      match(:term, :mult, :factor) { |a, b, c| CEMultDivOpNode.new(a, b, c) }
-        match('multiply', :term, 'by', :factor) { |_, a, _, b| CEMultDivOpNode.new(a, :mult, b) }
-	      match(:term, :div, :factor) { |a, b, c| CEMultDivOpNode.new(a, b, c) }
-        match('divide', :term, 'by', :factor) { |_, a, _, b| CEMultDivOpNode.new(a, :div, b) }
+	      match(:term, :mult, :factor) { |a, b, c| CEArithmeticOpNode.new(a, b, c) }
+        match('multiply', :term, 'by', :factor) { |_, a, _, b| CEArithmeticOpNode.new(a, :mult, b) }
+	      match(:term, :div, :factor) { |a, b, c| CEArithmeticOpNode.new(a, b, c) }
+        match('divide', :term, 'by', :factor) { |_, a, _, b| CEArithmeticOpNode.new(a, :div, b) }
         match(:factor) { |m| m }
       end
 
       rule :factor do
-        match(:exp, :exponent, :factor) { |a, _, b| CEExponentNode.new(a, b) }
+        match(:exp, :exponent, :factor) { |a, b, c| CEArithmeticOpNode.new(a, b, c) }
         match(:exp) { |m| m }
       end
 
@@ -130,7 +129,7 @@ class CodEng
       end
 
       rule :var do
-        match(/[a-zA-z]{1}\w*/) { |var| @vars.key?(var) ? @vars[var] : var }
+        match(/[a-zA-z]{1}\w*/) { |var| CEVariable.new(var) }
         match(:num)
       end
 

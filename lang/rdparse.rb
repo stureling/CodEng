@@ -131,7 +131,6 @@ class Parser
     @logger = Logger.new(STDOUT)
     @lex_tokens = []
     @rules = {}
-    @vars = {}
     @start = nil
     @language_name = language_name
     instance_eval(&block)
