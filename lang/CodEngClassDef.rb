@@ -35,8 +35,6 @@ class CEVariable < CEObject
 end
 
 class CENumber < CEObject
-  #Inherit from CEInt and CEFloat to see if it is a float or int
-  #So we know if the return is int or float for multi, div and exp?
   def add(object)
       if object.is_a?(CENumber)
           return self.assess + object.assess
@@ -108,3 +106,19 @@ class CEString < CEObject
         return @string
     end
 end
+
+class CEBool < CEObject
+    def initialize(bool_sym)
+        if bool_sym == :true
+            @boolvalue = true
+        elsif bool_sym == :false
+            @boolvalue = false
+        end
+    end
+    def assess
+        return @boolvalue
+    end
+end
+
+#x = CEBool.new(:true)
+#puts x.assess

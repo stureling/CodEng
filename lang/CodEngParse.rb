@@ -124,6 +124,7 @@ class CodEng
 
       rule :exp do
         match('(', :expr, ')') { |_, m, _| m }
+        match(:bool_const) { |m| m }
         match(:var) { |m| m }
       end
 
@@ -135,12 +136,11 @@ class CodEng
       rule :num do
         match(Integer) { |m| CEInteger.new(m) }
         match(Float) { |m| CEFloat.new(m) }
-        match(:logic_term) { |m| m }
       end
 
-      rule :logic_term do
-        match(:true) { |_| true }
-        match(:false) { |_| false }
+      rule :bool_const do
+        match(:true) { |m| CEBool.new(m) }
+        match(:false) { |m| CEBool.new(m) }
       end
 
     end

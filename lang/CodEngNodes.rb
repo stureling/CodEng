@@ -126,7 +126,11 @@ class CELogicORNode
     end
 
     def assess
-        @expr1.assess || @expr2.assess
+        if @expr1.assess || @expr2.assess
+            return CEBool.new(:true)
+        else
+            return CEBool.new(:false)
+        end
     end
 end
 
