@@ -1,5 +1,11 @@
 #!/usr/bin/env ruby
 
+#HELPER FUNCTIONS
+def assert_boolvalue(object)
+end
+
+
+#SCOPE
 class CEScope
     def initialize(name, parent=nil)
         @name, @parent = name, parent

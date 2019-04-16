@@ -65,10 +65,10 @@ class CEString < CEObject
 end
 
 class CEBool < CEObject
-  def initialize(bool_sym)
-    if bool_sym == :true
+  def initialize(object)
+    if assert_truthieness(object) == true
       @boolvalue = true
-    elsif bool_sym == :false
+    else 
       @boolvalue = false
     end
   end
