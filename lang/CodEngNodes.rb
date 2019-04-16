@@ -68,19 +68,20 @@ end
 
 class CERelationOpNode
   def initialize(expr1, op, expr2)
-      @expr1, @expr2 = expr1, expr2
-      @op = op
+    @expr1, @expr2 = expr1, expr2
+    @op = op
   end
 
   def assess(scope)
-      case @op
-      when :eqlless then return (@expr1.assess(scope) <= @expr2.assess(scope))
-      when :eqlgreater then return (@expr1.assess(scope) >= @expr2.assess(scope))
-      when :less then return (@expr1.assess(scope) < @expr2.assess(scope))
-      when :greater then return (@expr1.assess(scope) > @expr2.assess(scope))
-      when :equal then return (@expr1.assess(scope) == @expr2.assess(scope))
-      when :notequal then return (@expr1.assess(scope) != @expr2.assess(scope))
-      end
+    expr1, expr2 = assert_boolvalue(@expr1.assess(scope)), assert_boolvalue(@expr2.assess(scope))
+    case @op
+    when :eqlless then return CEBool.new(expr1.value <= expr2.value)
+    when :eqlgreater then return CEBool.new(expr1.value >= expr2.value)
+    when :less then return CEBool.new(expr1.value < expr2.value)
+    when :greater then return CEBool.new(expr1.value > expr2.value)
+    when :equal then return CEBool.new(expr1.value == expr2.value)
+    when :notequal then return CEBool.new(expr1.value != expr2.value)
+    end
   end
 end
 
@@ -101,16 +102,17 @@ class CELogicORNode
     @expr1, @expr2 = expr1, expr2
   end
   def assess(scope)
-    if @expr1.assess(scope).value || @expr2.assess(scope).value
-      return CEBool.new(:true)
+    expr1, expr2 = assert_boolvalue(@expr1.assess(scope)), assert_boolvalue(@expr2.assess(scope))
+    if expr1 or expr2
+      return CEBool.new(true)
     else
-      return CEBool.new(:false)
+      return CEBool.new(false)
     end
   end
 end
 
 class CEVarAssignNode
-  def initialize
+  def initialize()
       
   end
 end
