@@ -14,4 +14,5 @@ class TestLanguage < Test::Unit::TestCase
     end
 
     def test_a
+    end
 end

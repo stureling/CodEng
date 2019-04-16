@@ -2,32 +2,24 @@
 
 #HELPER FUNCTIONS
 def assert_boolvalue(object)
-  if object.class == CEInteger
+  puts object.class
+  case object.class
+  when CENumber
     if object.value != 0
       return true
     else
       return false
     end
-  elsif object.class == CEFloat
-    if object.value != 0
-      return true
-    else
-      return false
-    end
-  elsif object.class == CEBool
+  when CEBool
     if object.value == true
       return true
     else
       return false
     end
-  elsif  object.class == TrueClass
-    return true
-  elsif  object.class == FalseClass
-    return false
-  else
-    raise "Invalid type #{object}, expected CEBool, 
-    CEFloat, CEInteger, TrueClass or FalseClass"
+  when TrueClass then return true
+  when FalseClass then return false
   end
+  raise "Invalid type #{object}, expected CEBool, CEFloat, CEInteger, TrueClass or FalseClass"
 end
 
 
