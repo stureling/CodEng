@@ -112,8 +112,18 @@ class CELogicORNode
 end
 
 class CEVarAssignNode
-  def initialize()
-      
+  def initialize(var, expr)
+      @var = var
+      @expr = expr
+  end
+
+  def assess(scope)
+    if scope.contains?(var.name)
+      containing_scope = scope.get_scope(var.name)
+      containing_scope.add(@var, @expr)
+    else
+      scope.add(@var, @expr)
+    end
   end
 end
 

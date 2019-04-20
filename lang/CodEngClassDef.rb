@@ -17,16 +17,12 @@ class CENil < CEObject
 end
 
 class CEVariable < CEObject
-  def initialize(name, expr)
-    @name = name
-    @expr = expr
+  def initialize(name)
+    @name = name.to_s
   end
-
+  
   def assess(scope)
-  end
-
-  def value
-    return expr.assess(scope)
+    scope.get_var(@name).assess
   end
 end
 
@@ -78,6 +74,3 @@ class CEBool < CEObject
   end
 
 end
-
-#x = CEBool.new(:true)
-#puts x.assess(scope)
