@@ -12,6 +12,8 @@ class CodEng
       token(/\s+/)
       token(/-?\d+\.\d+/) { |t| t.to_f }
       token(/-?\d+/) { |t| t.to_i }
+      token(/start|begin/) { :start }
+      token(/stop|end/) { :stop }
       token(/\*\*|to the power of/) { :exponent }
       token(/\+|plus/) { :plus }
       token(/-|minus/) { :minus }
@@ -49,12 +51,12 @@ class CodEng
       end
 
       rule :unmatched do
-        #match('', :logic_expr, 'then' :statment) { |_, l, _, s|  l then s end}
-        #match('', :logic_expr, 'then' :matched 'else' :statment) { |_, l, _, m, _, s|  l then m else s end}
+        #match('', :expr, 'then' :statment) { |_, l, _, s|  l then s end}
+        #match('', :expr, 'then' :matched 'else' :statment) { |_, l, _, m, _, s|  l then m else s end}
       end
 
       rule :matched do
-        #match('', :logic_expr, 'then' :matched 'else' :matched) { |_, l, _, m, _, m|  l then m else m end}
+        #match('', :expr, 'then' :matched 'else' :matched) { |_, l, _, m, _, m|  l then m else m end}
         match(:for_loop) { |m| m }
         match(:while_loop) { |m| m}
         match(:valid) { |m| m }
@@ -171,6 +173,15 @@ class CodEng
       str = lines[i]
       if str == "\n"
         i += 1
+      elsif str.include?("#")
+        index = str.index("#")
+        if index > 0 then
+          str = str.slice(0...index)
+          answers[(i + 1)] = "#{@CodEngParser.parse(str).value}"
+          i += 1
+        else
+          i += 1
+        end
       else
         answers[(i + 1)] = "#{@CodEngParser.parse(str).value}"
         i += 1

@@ -29,3 +29,9 @@ not false
 0 and 1
 0.2 or 1
 0.0 or 0
+
+5 - 2 #randomtext
+# test text 4 - 3
+83 + -55 # more text that have no purpuse other than fill out space 
+#Simple expressions work but complex expressions does not work.
+# For example this: (5 + 5) * 2 does not work
