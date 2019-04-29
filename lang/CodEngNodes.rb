@@ -36,7 +36,12 @@ class CENotNode
   end
 
   def assess(scope)
-    !@expr.assess(scope).value
+    expr = assert_boolvalue(@expr.assess(scope))
+    if !expr
+      return CEBool.new(true)
+    else
+      return CEBool.new(false)
+    end
   end
 end
 
@@ -92,7 +97,12 @@ class CELogicANDNode
   end
 
   def assess(scope)
-      @expr1.assess(scope) && @expr2.assess(scope)
+    expr1, expr2 = assert_boolvalue(@expr1.assess(scope)), assert_boolvalue(@expr2.assess(scope))
+    if expr1 and expr2
+      return CEBool.new(true)
+    else
+      return CEBool.new(false)
+    end
   end
 end
 
@@ -101,6 +111,7 @@ class CELogicORNode
   def initialize(expr1, expr2)
     @expr1, @expr2 = expr1, expr2
   end
+  
   def assess(scope)
     expr1, expr2 = assert_boolvalue(@expr1.assess(scope)), assert_boolvalue(@expr2.assess(scope))
     if expr1 or expr2

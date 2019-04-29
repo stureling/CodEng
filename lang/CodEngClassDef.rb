@@ -48,6 +48,9 @@ class CEFloat < CENumber
     def assess(scope)
         return self
     end
+    def name(num)
+      @name = num.to_s
+    end
 end
 
 class CEString < CEObject

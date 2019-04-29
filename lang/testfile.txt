@@ -1,0 +1,31 @@
+3 + 4
+5 plus 4
+6 - 4
+92 minus 12
+5 * 5
+3 times 7
+24 / 3
+30 over 5
+4 ** 2
+2 to the power of 8
+-30 plus 15
+true and true
+true and false
+false and true
+false and false
+true or true
+true or false
+false or true
+false or false
+not true
+not false
+0.1 and true
+0.0 and true
+1 and true
+0 and true
+
+
+0.1 and 1
+0 and 1
+0.2 or 1
+0.0 or 0

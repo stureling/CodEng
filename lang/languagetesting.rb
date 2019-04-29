@@ -1,4 +1,5 @@
 require_relative 'CodEngNodes.rb'
+require_relative 'CodEngParse.rb'
 require 'test/unit'
 
 class TestLanguage < Test::Unit::TestCase
@@ -12,7 +13,12 @@ class TestLanguage < Test::Unit::TestCase
         x = CEInteger.new(0)
         assert_equal(assert_boolvalue(x), false)
     end
-
-    def test_a
-    end
 end
+
+    #why no names in CEFLOATS QQ
+    #def test_assert_arithmeticnode
+    #    scope = CEScope.new("fortests")
+    #    scope.add(CEFloat.new(3.4), "test_x")
+    #    scope.add(CEFloat.new(4.1), "test_y")
+    #    assert_equal(CEArithmeticOpNode.new(x.value, :plus, y.value).assess(scope), 7.5)
+    #end

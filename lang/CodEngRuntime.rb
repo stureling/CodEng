@@ -2,10 +2,21 @@
 
 #HELPER FUNCTIONS
 def assert_boolvalue(object)
-  puts object.class
-  test = object.class
-  case test
-  when CENumber
+
+  #verkar inte fungera med switch - case 
+=begin
+  classtype = object.class
+  puts object.value
+  puts classtype
+
+  case classtype
+  when CEInteger
+    if object.value != 0
+      return true
+    else
+      return false
+    end
+  when CEFloat
     if object.value != 0
       return true
     else
@@ -20,7 +31,33 @@ def assert_boolvalue(object)
   when TrueClass then return true
   when FalseClass then return false
   end
-  raise "Invalid type #{object}, expected CEBool, CEFloat, CEInteger, TrueClass or FalseClass"
+  raise "Invalid type #{object.class}, expected CEBool, CEFloat, CEInteger, TrueClass or FalseClass"
+=end
+  classtype = object.class
+
+  if classtype == CEInteger then
+    if object.value != 0
+      return true
+    else
+      return false
+    end
+  elsif classtype == CEFloat
+    if object.value != 0
+      return true
+    else
+      return false
+    end
+  elsif classtype == CEBool
+    if object.value == true
+      return true
+    else
+      return false
+    end
+  elsif classtype == TrueClass then return true
+  elsif classtype == FalseClass then return false
+  end
+  raise "Invalid type #{object.class}, expected CEBool, 
+  CEFloat, CEInteger, TrueClass or FalseClass"
 end
 
 
@@ -35,14 +72,18 @@ class CEScope
   end
 
   def add(var, expr)
+    puts var
+    puts expr
     scope = self
     if self.contains?(var.name)
+      puts "why you in here"
       scope = get_scope(var.name)
     end
     scope.set_var(var, expr)
   end
 
   def set_var(var, expr)
+    puts "should be here"
     #Only used internally by function add. Sets the var in the current scope.
     @vars[var.name = expr]
   end
@@ -82,5 +123,9 @@ class CEScope
 
   def assess
     #Probably a print function?
+  end
+
+  def for_tests
+    return self
   end
 end

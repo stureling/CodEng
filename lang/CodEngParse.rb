@@ -162,6 +162,24 @@ class CodEng
     end
   end
 
+  def parse_file_by_line(filename)
+    f = File.new(filename)
+    lines = f.readlines
+    i = 0
+    answers = {}
+    while i < lines.length
+      str = lines[i]
+      if str == "\n"
+        i += 1
+      else
+        answers[(i + 1)] = "#{@CodEngParser.parse(str).value}"
+        i += 1
+      end
+    end
+    answers.each{|key,value|puts "Answer for row number #{key} is: #{value}"}
+    puts "#{filename} has been successfully parsed."
+  end
+        
   def log(state = true)
     if state
       @CodEngParser.logger.level = Logger::DEBUG
@@ -171,5 +189,7 @@ class CodEng
   end
 end
 
+
+
 a = CodEng.new
-a.run
+a.parse_file_by_line("testfile.txt")
