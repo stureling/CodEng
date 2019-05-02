@@ -13,12 +13,11 @@ class TestLanguage < Test::Unit::TestCase
         x = CEInteger.new(0)
         assert_equal(assert_boolvalue(x), false)
     end
+
+    def test_variable_declaration
+        x = CEVariable.new("num")
+        assert_equal(x.assess)
+    end
 end
 
-    #why no names in CEFLOATS QQ
-    #def test_assert_arithmeticnode
-    #    scope = CEScope.new("fortests")
-    #    scope.add(CEFloat.new(3.4), "test_x")
-    #    scope.add(CEFloat.new(4.1), "test_y")
-    #    assert_equal(CEArithmeticOpNode.new(x.value, :plus, y.value).assess(scope), 7.5)
-    #end
+   

@@ -33,5 +33,22 @@ not false
 5 - 2 #randomtext
 # test text 4 - 3
 83 + -55 # more text that have no purpuse other than fill out space 
-#Simple expressions work but complex expressions does not work.
-# For example this: (5 + 5) * 2 does not work
+(5 + 5) * 2
+
+2 < 3
+4 > 2
+4 <= 4
+3 == 3
+3 != 3
+5 >= 6
+5 >= 5
+5 >= 4
+
+x = 3
+y = 4
+x
+y
+3 - 2
+
+v is 9
+#z is 4

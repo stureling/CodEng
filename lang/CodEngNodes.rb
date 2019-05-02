@@ -76,9 +76,6 @@ class CEArithmeticOpNode
 
   def assess(scope)
     expr1, expr2 = @expr1.assess(scope), @expr2.assess(scope)
-    puts "\n\nHÄR ÄR JAG \n\n"
-    puts expr1 
-    puts expr2
     if expr1.is_a?(CENumber) and expr2.is_a?(CENumber)
       case @op
       when :plus then new_value = expr1.value + expr2.value
@@ -103,14 +100,13 @@ class CERelationOpNode
   end
 
   def assess(scope)
-    expr1, expr2 = assert_boolvalue(@expr1.assess(scope)), assert_boolvalue(@expr2.assess(scope))
     case @op
-    when :eqlless then return CEBool.new(expr1.value <= expr2.value)
-    when :eqlgreater then return CEBool.new(expr1.value >= expr2.value)
-    when :less then return CEBool.new(expr1.value < expr2.value)
-    when :greater then return CEBool.new(expr1.value > expr2.value)
-    when :equal then return CEBool.new(expr1.value == expr2.value)
-    when :notequal then return CEBool.new(expr1.value != expr2.value)
+    when :eqllesser then return CEBool.new(@expr1.value <= @expr2.value)
+    when :eqlgreater then return CEBool.new(@expr1.value >= @expr2.value)
+    when :less then return CEBool.new(@expr1.value < @expr2.value)
+    when :greater then return CEBool.new(@expr1.value > @expr2.value)
+    when :equal then return CEBool.new(@expr1.value == @expr2.value)
+    when :notequal then return CEBool.new(@expr1.value != @expr2.value)
     end
   end
 end

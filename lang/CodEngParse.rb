@@ -23,14 +23,14 @@ class CodEng
       token(/false/) { :false }
       token(/&&|and/) { :and }
       token(/\|\||or/) { :or }
-      token(/!|not /) { :not }
       token(/!=|not equal to/) { :notequal }
       token(/==|equal to/) { :equal }
-      token(/>|greater than/) { :greater }
-      token(/>=|equal or greater than|greater than or equal to/) { :eqlgreater }
-      token(/<|less than/) { :less }
       token(/<=|equal or less than|less than or equal to/) { :eqllesser }
-      token(/=|is/) { |t| t }
+      token(/>=|equal or greater than|greater than or equal to/) { :eqlgreater }
+      token(/!|not /) { :not }
+      token(/>|greater than/) { :greater }
+      token(/<|less than/) { :less }
+      token(/=|is/) { :assign_operator }
       token(/[a-zA-Z_]+/) { |t| t }
       token(/./) { |t| t }
 
@@ -41,7 +41,7 @@ class CodEng
       end
       
       rule :statements do
-        match(:statements, :statement) { |master_list, list| master_list.concat(list) }
+        #match(:statements, :statement) { |master_list, list| master_list.concat(list) }
         match(:statement) { |m| m }
       end
 
@@ -51,12 +51,12 @@ class CodEng
       end
 
       rule :unmatched do
-        match('', :expr, 'then', :statement) { |_, l, _, s| CEIfStatement.new(l, s)}
-        match('', :expr, 'then', :matched, 'else', :statement) { |_, l, _, m, _, s| CEIfElseStatement.new(l, m, s)}
+        match('if', :expr, 'then', :statement) { |_, l, _, s| CEIfStatement.new(l, s)}
+        match('if', :expr, 'then', :matched, 'else', :statement) { |_, l, _, m, _, s| CEIfElseStatement.new(l, m, s)}
       end
 
       rule :matched do
-        match('', :expr, 'then', :matched, 'else', :matched) { |_, l, _, m1, _, m2| CEIfElseStatement.new(l, m1, m2)}
+        match('if', :expr, 'then', :matched, 'else', :matched) { |_, l, _, m1, _, m2| CEIfElseStatement.new(l, m1, m2)}
         match(:for_loop) { |m| m }
         match(:while_loop) { |m| m}
         match(:valid) { |m| m }
@@ -68,7 +68,7 @@ class CodEng
       end
 
       rule :assign do
-        match(:var, '=', :expr) { |var, _, expr| CEVarAssignNode.new(var, expr) }
+        match(:var, :assign_operator, :expr) { |var, _, expr| CEVarAssignNode.new(var, expr) }
         #match(:prefix, :var, 'is', :expr) { |_, var, _, expr| @vars[var] = expr } #
       end
 
@@ -97,7 +97,7 @@ class CodEng
 
       rule :compare_relops do
         match(:compare_relops, :less ,:arithmetic_expr) { |a, b, c| CERelationOpNode.new(a, b, c) }
-        match(:compare_relops, :eqlless ,:arithmetic_expr) { |a, b, c| CERelationOpNode.new(a, b, c) }
+        match(:compare_relops, :eqllesser ,:arithmetic_expr) { |a, b, c| CERelationOpNode.new(a, b, c) }
         match(:compare_relops, :greater ,:arithmetic_expr) { |a, b, c| CERelationOpNode.new(a, b, c) }
         match(:compare_relops, :eqlgreater ,:arithmetic_expr) { |a, b, c| CERelationOpNode.new(a, b, c) }
         match(:arithmetic_expr) { |m| m }
@@ -132,7 +132,7 @@ class CodEng
       end
 
       rule :var do
-        match(/[a-zA-z]{1}\w*/) { |var| CEVariable.new(var,) }
+        match(/[a-zA-z]{1}\w*/) { |var| CEVariable.new(var) }
         match(:num)
       end
 
@@ -203,7 +203,5 @@ class CodEng
 end
 
 
-
 a = CodEng.new
 a.parse_file_by_line("testfile.txt")
-a.run
