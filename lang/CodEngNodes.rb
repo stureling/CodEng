@@ -152,11 +152,9 @@ class CEVarAssignNode
 
   def assess(scope)
     if scope.contains?(var.name)
-      containing_scope = scope.get_scope(var.name)
-      containing_scope.add(@var, @expr)
-    else
-      scope.add(@var, @expr)
+      scope = scope.get_scope(var.name)
     end
+    scope.add(@var, @expr)
   end
 end
 

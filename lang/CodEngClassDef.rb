@@ -13,14 +13,15 @@ class CEObject
     end
 end
 
-class CENil < CEObject
+class CENil
 end
 
 class CEVariable < CEObject
+  attr_reader :value, :name
   def initialize(name)
-    @name = name.to_s
+    @name = name.to_sym
   end
-  
+
   def assess(scope)
     scope.get_var(@name).assess
   end
@@ -47,9 +48,6 @@ class CEFloat < CENumber
     end
     def assess(scope)
         return self
-    end
-    def name(num)
-      @name = num.to_s
     end
 end
 

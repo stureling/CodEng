@@ -72,18 +72,14 @@ class CEScope
   end
 
   def add(var, expr)
-    puts var
-    puts expr
     scope = self
     if self.contains?(var.name)
-      puts "why you in here"
       scope = get_scope(var.name)
     end
     scope.set_var(var, expr)
   end
 
   def set_var(var, expr)
-    puts "should be here"
     #Only used internally by function add. Sets the var in the current scope.
     @vars[var.name = expr]
   end

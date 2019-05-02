@@ -68,7 +68,7 @@ class CodEng
       end
 
       rule :assign do
-        match(:var, '=', :expr) { |var, _, expr| CEVarAssignNode.set(expr) }
+        match(:var, '=', :expr) { |var, _, expr| CEVarAssignNode.new(var, expr) }
         #match(:prefix, :var, 'is', :expr) { |_, var, _, expr| @vars[var] = expr } #
       end
 
