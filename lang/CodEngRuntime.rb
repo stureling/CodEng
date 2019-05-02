@@ -87,6 +87,7 @@ class CEScope
   #Function functions
    
   def add_fun(function, name)
+  end
 
   #Helper functions
   def root

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require_relative 'rdparse.rb'
+require_relative 'rdparse_debug.rb'
 require_relative 'CodEngNodes.rb'
 
 class CodEng
@@ -30,12 +30,7 @@ class CodEng
       token(/!|not /) { :not }
       token(/>|greater than/) { :greater }
       token(/<|less than/) { :less }
-<<<<<<< HEAD
       token(/=|is/) { :assign_operator }
-=======
-      token(/<=|equal or less than|less than or equal to/) { :eqllesser }
-      token(/=|is/) { :is }
->>>>>>> 87667dd80a5157389461ee748478e45e890826ed
       token(/[a-zA-Z_]+/) { |t| t }
       token(/./) { |t| t }
 
@@ -73,11 +68,7 @@ class CodEng
       end
 
       rule :assign do
-<<<<<<< HEAD
         match(:var, :assign_operator, :expr) { |var, _, expr| CEVarAssignNode.new(var, expr) }
-=======
-        match(:var, :is, :expr) { |var, _, expr| CEVarAssignNode.new(var, expr) }
->>>>>>> 87667dd80a5157389461ee748478e45e890826ed
         #match(:prefix, :var, 'is', :expr) { |_, var, _, expr| @vars[var] = expr } #
       end
 
