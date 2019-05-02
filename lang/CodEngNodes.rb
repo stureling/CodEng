@@ -11,14 +11,42 @@ class CEBlockNode
   end
 end
 
+class CEFunctionDefNode
+  attr_reader :name, :block, :args
+  def initialize(name, block, args=[])
+    @name, @block, @args = name, block, args
+  end
+
+  def assess(scope)
+    scope.add_fun(self)
+  end
+end
+
+class CEFunctionCallNode
+  def initialize(name, args=[])
+    @name, @args = name, args
+  end
+
+  def assess(scope)
+    new_scope = CEScope.new('Function', scope)
+    fun = scope.get_fun(@name)
+    index = 0
+    while index < args.size
+      fun.args[index]
+      @args[index]
+      index += 1
+    end
+  end
+end
+
 class CEIfStatementNode
-  def initialize(logic_comp, stmt)
-    @logic_comp, @stmt = logic_comp, stmt
+  def initialize(logic_stmnt, block)
+    @logic_stmt, @block = logic_stmt, block
   end
 
   def assess(scope)
     new_scope = CEScope.new("if", scope)
-    if @logic_comp.value then
+    if @logic_stmt.assess(scope).value then
       @stmt.assess(new_scope)
     end
   end
