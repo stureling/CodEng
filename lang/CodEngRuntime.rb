@@ -2,37 +2,6 @@
 
 #HELPER FUNCTIONS
 def assert_boolvalue(object)
-
-  #verkar inte fungera med switch - case 
-=begin
-  classtype = object.class
-  puts object.value
-  puts classtype
-
-  case classtype
-  when CEInteger
-    if object.value != 0
-      return true
-    else
-      return false
-    end
-  when CEFloat
-    if object.value != 0
-      return true
-    else
-      return false
-    end
-  when CEBool
-    if object.value == true
-      return true
-    else
-      return false
-    end
-  when TrueClass then return true
-  when FalseClass then return false
-  end
-  raise "Invalid type #{object.class}, expected CEBool, CEFloat, CEInteger, TrueClass or FalseClass"
-=end
   classtype = object.class
 
   if classtype == CEInteger then
@@ -69,9 +38,12 @@ class CEScope
   def initialize(name, parent=nil)
     @name, @parent = name, parent
     @vars = {}
+    @functions = {}
   end
 
-  def add(var, expr)
+  #Var functions
+
+  def add_var(var, expr)
     scope = self
     if self.contains?(var.name)
       scope = get_scope(var.name)
@@ -80,7 +52,6 @@ class CEScope
   end
 
   def set_var(var, expr)
-    #Only used internally by function add. Sets the var in the current scope.
     @vars[var.name] = expr
   end
 
@@ -112,7 +83,12 @@ class CEScope
       return false
     end
   end
-    
+
+  #Function functions
+   
+  def add_fun(function, name)
+
+  #Helper functions
   def root
     #@parent == nil ? return self : return @parent.root
     if @parent == nil then

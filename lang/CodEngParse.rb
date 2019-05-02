@@ -30,7 +30,7 @@ class CodEng
       token(/>=|equal or greater than|greater than or equal to/) { :eqlgreater }
       token(/<|less than/) { :less }
       token(/<=|equal or less than|less than or equal to/) { :eqllesser }
-      token(/=|is/) { |t| t }
+      token(/=|is/) { :is }
       token(/[a-zA-Z_]+/) { |t| t }
       token(/./) { |t| t }
 
@@ -41,7 +41,7 @@ class CodEng
       end
       
       rule :statements do
-        match(:statements, :statement) { |master_list, list| master_list.concat(list) }
+        #match(:statements, :statement) { |master_list, list| master_list.concat(list) }
         match(:statement) { |m| m }
       end
 
@@ -68,7 +68,7 @@ class CodEng
       end
 
       rule :assign do
-        match(:var, '=', :expr) { |var, _, expr| CEVarAssignNode.new(var, expr) }
+        match(:var, :is, :expr) { |var, _, expr| CEVarAssignNode.new(var, expr) }
         #match(:prefix, :var, 'is', :expr) { |_, var, _, expr| @vars[var] = expr } #
       end
 
