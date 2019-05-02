@@ -119,6 +119,11 @@ class CEScope
     
   def root
     #@parent == nil ? return self : return @parent.root
+    if @parent == nil then
+      return self
+    else 
+      return @parent.root
+    end
   end
 
   def assess

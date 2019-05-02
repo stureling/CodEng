@@ -6,14 +6,36 @@ require_relative 'CodEngClassDef.rb'
 #I noderna kommer alla andra klasser att kallas och 
 
 class CEBlockNode
-  def initialize
+  def initialize()
       
   end
 end
 
-class CEIfStatmentNode
-  def initialize
-      
+class CEIfStatementNode
+  def initialize(logic_comp, stmt)
+    @logic_comp, @stmt = logic_comp, stmt
+  end
+
+  def assess(scope)
+    new_scope = CEScope.new("if", scope)
+    if @logic_comp.value then
+      @stmt.assess(new_scope)
+    end
+  end
+end
+
+class CEIfElseStatementNode
+  def initialize(logic_comp, stmt, else_stmt)
+    @logic_comp, @stmt, @else_stmt = logic_comp, stmt, else_stmt
+  end
+
+  def assess(scope)
+    new_scope = CEScope.new("if", scope)
+    if @logic_comp.value then
+      @stmt.assess(new_scope)
+    else
+      @else_stmt.assess(new_scope)
+    end
   end
 end
 

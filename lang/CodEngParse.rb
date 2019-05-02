@@ -41,22 +41,22 @@ class CodEng
       end
       
       rule :statements do
-        match(:statements, :statment) { |master_list, list| master_list.concat(list) }
-        match(:statment) { |m| m }
+        match(:statements, :statement) { |master_list, list| master_list.concat(list) }
+        match(:statement) { |m| m }
       end
 
-      rule :statment do
+      rule :statement do
         match(:matched) { |m| m }
         match(:unmatched) { |m| m }
       end
 
       rule :unmatched do
-        #match('', :expr, 'then' :statment) { |_, l, _, s|  l then s end}
-        #match('', :expr, 'then' :matched 'else' :statment) { |_, l, _, m, _, s|  l then m else s end}
+        match('', :expr, 'then' :statement) { |_, l, _, s| CEIfStatement.new(l, s)}
+        match('', :expr, 'then' :matched 'else' :statement) { |_, l, _, m, _, s| CEIfElseStatement.new(l, m, s)}
       end
 
       rule :matched do
-        #match('', :expr, 'then' :matched 'else' :matched) { |_, l, _, m, _, m|  l then m else m end}
+        match('', :expr, 'then' :matched 'else' :matched) { |_, l, _, m1, _, m2| CEIfElseStatement.new(l, m1, m2)}
         match(:for_loop) { |m| m }
         match(:while_loop) { |m| m}
         match(:valid) { |m| m }
@@ -174,6 +174,8 @@ class CodEng
       if str == "\n"
         i += 1
       elsif str.include?("#")
+        # will see everything with # in front of it as comments
+        # even in strings
         index = str.index("#")
         if index > 0 then
           str = str.slice(0...index)
