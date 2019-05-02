@@ -81,10 +81,10 @@ class CEScope
 
   def set_var(var, expr)
     #Only used internally by function add. Sets the var in the current scope.
-    @vars[var.name = expr]
+    @vars[var.name] = expr
   end
 
-  def get_var(var)
+  def get_var(var_name)
     if @vars.has_key?(var_name)
       return @vars[var_name]
     elsif @parent != nil
@@ -93,8 +93,8 @@ class CEScope
       raise "Variable '#{var_name.to_s}' not declared in current scope or parents"
   end
 
-  def get_scope(var)
-    if @vars.has_key?(var.name)
+  def get_scope(var_name)
+    if @vars.has_key?(var_name)
       return self
     elsif @parent != nil
       return @parent.get_scope(var_name)

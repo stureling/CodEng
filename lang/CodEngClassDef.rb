@@ -3,7 +3,7 @@
 =begin
 TODO PRIORITY LIST
 
-1. Scopes and function def
+1. Function def
 2. loops and function call
 3. everything else
 =end
@@ -23,7 +23,7 @@ class CEVariable < CEObject
   end
 
   def assess(scope)
-    scope.get_var(@name).assess
+    scope.get_var(@name).assess(scope)
   end
 end
 

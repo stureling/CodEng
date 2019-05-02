@@ -51,12 +51,12 @@ class CodEng
       end
 
       rule :unmatched do
-        match('', :expr, 'then' :statement) { |_, l, _, s| CEIfStatement.new(l, s)}
-        match('', :expr, 'then' :matched 'else' :statement) { |_, l, _, m, _, s| CEIfElseStatement.new(l, m, s)}
+        match('', :expr, 'then', :statement) { |_, l, _, s| CEIfStatement.new(l, s)}
+        match('', :expr, 'then', :matched, 'else', :statement) { |_, l, _, m, _, s| CEIfElseStatement.new(l, m, s)}
       end
 
       rule :matched do
-        match('', :expr, 'then' :matched 'else' :matched) { |_, l, _, m1, _, m2| CEIfElseStatement.new(l, m1, m2)}
+        match('', :expr, 'then', :matched, 'else', :matched) { |_, l, _, m1, _, m2| CEIfElseStatement.new(l, m1, m2)}
         match(:for_loop) { |m| m }
         match(:while_loop) { |m| m}
         match(:valid) { |m| m }
@@ -206,3 +206,4 @@ end
 
 a = CodEng.new
 a.parse_file_by_line("testfile.txt")
+a.run

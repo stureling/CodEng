@@ -76,6 +76,9 @@ class CEArithmeticOpNode
 
   def assess(scope)
     expr1, expr2 = @expr1.assess(scope), @expr2.assess(scope)
+    puts "\n\nHÄR ÄR JAG \n\n"
+    puts expr1 
+    puts expr2
     if expr1.is_a?(CENumber) and expr2.is_a?(CENumber)
       case @op
       when :plus then new_value = expr1.value + expr2.value
@@ -151,8 +154,8 @@ class CEVarAssignNode
   end
 
   def assess(scope)
-    if scope.contains?(var.name)
-      scope = scope.get_scope(var.name)
+    if scope.contains?(@var.name)
+      scope = scope.get_scope(@var.name)
     end
     scope.add(@var, @expr)
   end
