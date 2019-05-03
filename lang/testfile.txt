@@ -50,5 +50,7 @@ x
 y
 3 - 2
 
-v is 9
+c = x + y
+
+#v is 9
 #z is 4

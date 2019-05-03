@@ -5,9 +5,17 @@ require_relative 'CodEngClassDef.rb'
 #Parsern genererar noder
 #I noderna kommer alla andra klasser att kallas och 
 
-class CEBlockNode
-  def initialize()
-      
+class CEProgramNode
+  def initialize(statements)
+    @statements = statements
+  end
+
+  def assess(scope)
+    temp = 1
+    @statements.each do |statement|
+      temp = statement.assess(scope)
+    end
+    return temp
   end
 end
 
@@ -181,7 +189,8 @@ class CEVarAssignNode
     if scope.contains?(@var.name)
       scope = scope.get_scope(@var.name)
     end
-    scope.add(@var, @expr)
+    scope.add_var(@var, @expr.assess(scope))
+    return @expr.assess(scope)
   end
 end
 

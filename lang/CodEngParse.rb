@@ -35,14 +35,14 @@ class CodEng
       token(/./) { |t| t }
 
       start :program do
-        match(:statements) { |m| m.assess(@@root_scope) } #assess all statements in the list
+        match(:statements) {|statements| CEProgramNode.new(statements) }
         #match('start', :statements, 'stop') { |_, m, _| m }
         #match(start, :statements, :block, stop) { |_, a, b, _| a, b }
       end
       
       rule :statements do
-        #match(:statements, :statement) { |master_list, list| master_list.concat(list) }
-        match(:statement) { |m| m }
+        match(:statements, :statement) { |master_list, statement| master_list.concat([statement]) }
+        match(:statement) { |m| [m] }
       end
 
       rule :statement do
@@ -159,7 +159,7 @@ class CodEng
     if done(str) then
       puts "Bye."
     else
-      puts "=> #{@CodEngParser.parse(str)}"
+      puts "=> #{@CodEngParser.parse(str).assess(@@root_scope)}"
       run
     end
   end
@@ -179,17 +179,17 @@ class CodEng
         index = str.index("#")
         if index > 0 then
           str = str.slice(0...index)
-          answers[(i + 1)] = "#{@CodEngParser.parse(str).value}"
+          answers[(i + 1)] = "#{@CodEngParser.parse(str).assess(@@root_scope).value}"
           i += 1
         else
           i += 1
         end
       else
-        answers[(i + 1)] = "#{@CodEngParser.parse(str).value}"
+        answers[(i + 1)] = "#{@CodEngParser.parse(str).assess(@@root_scope).value}"
         i += 1
       end
     end
-    answers.each{|key,value|puts "Answer for row number #{key} is: #{value}"}
+    answers.each{|key,value|puts "#{lines[key-1].chomp} => #{value}"}
     puts "#{filename} has been successfully parsed."
   end
         
@@ -205,3 +205,4 @@ end
 
 a = CodEng.new
 a.parse_file_by_line("testfile.txt")
+a.run
