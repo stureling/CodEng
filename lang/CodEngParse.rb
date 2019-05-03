@@ -6,7 +6,7 @@ require_relative 'CodEngNodes.rb'
 class CodEng
 
   @@root_scope = CEScope.new('root')
-
+  
   def initialize
     @CodEngParser = Parser.new( "CodEng") do
       token(/\s+/)
@@ -14,6 +14,7 @@ class CodEng
       token(/-?\d+/) { |t| t.to_i }
       token(/start|begin/) { :start }
       token(/stop|end/) { :stop }
+      token(/do/) { :do}
       token(/\*\*|to the power of/) { :exponent }
       token(/\+|plus/) { :plus }
       token(/-|minus/) { :minus }
@@ -60,6 +61,11 @@ class CodEng
 
       rule :arg_decl do
         match(:var) { |m| m }
+      end
+
+      rule :comp_stmt do
+        #match(indentering, :statements, dedentering)
+      
       end
 
       rule :statement do
