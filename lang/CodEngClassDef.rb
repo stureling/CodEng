@@ -17,7 +17,7 @@ class CENil
 end
 
 class CEVariable < CEObject
-  attr_reader :value, :name
+  attr_reader :name
   def initialize(name)
     @name = name.to_sym
   end
