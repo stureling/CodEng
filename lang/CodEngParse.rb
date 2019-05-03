@@ -31,7 +31,7 @@ class CodEng
       token(/>|greater than/) { :greater }
       token(/<|less than/) { :less }
       token(/=|is/) { :assign_operator }
-      token(/[a-zA-Z_]+/) { |t| t }
+      token(/[a-zA-Z_]+/) { |t| CEVariable.new(t) }
       token(/./) { |t| t }
 
       start :program do
@@ -132,7 +132,7 @@ class CodEng
       end
 
       rule :var do
-        match(/[a-zA-z]{1}\w*/) { |var| CEVariable.new(var) }
+        match(CEVariable) { |var| var }
         match(:num)
       end
 
@@ -159,7 +159,7 @@ class CodEng
     if done(str) then
       puts "Bye."
     else
-      puts "=> #{@CodEngParser.parse(str).assess(@@root_scope)}"
+      puts "=> #{@CodEngParser.parse(str).assess(@@root_scope).inspect}"
       run
     end
   end

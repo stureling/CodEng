@@ -35,13 +35,17 @@ class CEFunctionCallNode
     @name, @args = name, args
   end
 
+  def prepare_scope(scope, vars, args)
+    
+  end
+
   def assess(scope)
-    new_scope = CEScope.new('Function', scope)
+    new_scope = CEScope.new("Function #{@name.to_s}", scope)
     fun = scope.get_fun(@name)
     index = 0
-    while index < args.size
-      fun.args[index]
-      @args[index]
+    while index < @args.size
+      argument = fun.args[index]
+      new_scope.set_var(CEVariable.new(argument), @args[index])
       index += 1
     end
   end
