@@ -10,6 +10,7 @@ class CodEng
   def initialize
     @CodEngParser = Parser.new( "CodEng") do
       token(/\s+/)
+      token(/\\n/) 
       token(/-?\d+\.\d+/) { |t| t.to_f }
       token(/-?\d+/) { |t| t.to_i }
       token(/start|begin/) { :start }
@@ -31,7 +32,8 @@ class CodEng
       token(/!|not /) { :not }
       token(/>|greater than/) { :greater }
       token(/<|less than/) { :less }
-      token(/=|is/) { :assign_operator }
+      token(/=/) { :assign_operator }
+      token(/is/) { :assign_operator }
       token(/[a-zA-Z_]+/) { |t| CEVariable.new(t) }
       token(/./) { |t| t }
 
