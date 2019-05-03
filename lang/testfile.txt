@@ -51,6 +51,7 @@ y
 3 - 2
 
 c = x + y
+c
 
-#v is 9
+v is 9
 #z is 4

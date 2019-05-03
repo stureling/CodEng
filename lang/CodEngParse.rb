@@ -42,7 +42,24 @@ class CodEng
       
       rule :statements do
         match(:statements, :statement) { |master_list, statement| master_list.concat([statement]) }
-        match(:statement) { |m| [m] }
+        match(:func_decl) { |m| [m] }
+      end
+
+      rule :func_decl do
+        match('define', CEVariable, 'with', :arg_list, 'do', :comp_stmt) do 
+          |_, name, _, arg_list, _, comp_stmt| 
+          CEFunctionDefNode.new(name, comp_stmt, arg_list)
+        end
+        match(:statement) { |m| m}
+      end
+
+      rule :arg_list do
+        match(:arg_list, ',', :arg_decl) { |arg_list, _, args| arg_list << args }
+        match(:arg_decl) { |m| m }
+      end
+
+      rule :arg_decl do
+        match(:var) { |m| m }
       end
 
       rule :statement do
@@ -204,5 +221,5 @@ end
 
 
 a = CodEng.new
-a.parse_file_by_line("testfile.txt")
+#a.parse_file_by_line("testfile.txt")
 a.run
