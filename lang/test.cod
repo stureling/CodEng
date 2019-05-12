@@ -1,16 +1,5 @@
-<<<<<<< HEAD
 t = 2
 if t == 2 then
 q = x + i
 f = 2
-=======
-x = 2
-
-define fun1 with y do
-x = y + 3
->>>>>>> 8dfa1e12ea36d250863c043ce3bbad5cd6c55ea8
 stop
-
-call fun1 with x
-
-x

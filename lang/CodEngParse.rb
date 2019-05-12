@@ -14,14 +14,10 @@ class CodEng
       token(/^-?\d+\.\d+/) { |t| CEFloat.new(t.to_f) }
       token(/^-?\d+/) { |t| CEInteger.new(t.to_i) }
       token(/start/) { :start }
-<<<<<<< HEAD
       token(/begin/) { :start }
       token(/stop/) { :stop }
       token(/end/) { :stop }
-=======
-      token(/stop/) { :stop }
       token(/call/) { :call }
->>>>>>> 8dfa1e12ea36d250863c043ce3bbad5cd6c55ea8
       token(/do/) { :do}
       token(/with/) { :with}
       token(/define/) { :define}
@@ -63,10 +59,7 @@ class CodEng
         match(:matched) { |m| m }
         match(:unmatched) { |m| m }
         match(:func_def) { |m| m }
-<<<<<<< HEAD
-=======
         match(:func_call) { |m| m }
->>>>>>> 8dfa1e12ea36d250863c043ce3bbad5cd6c55ea8
         match(:while_loop) { |m| m}
         match(:valid) { |m| m }
       end
@@ -92,13 +85,8 @@ class CodEng
             CEFunctionDefNode.new(name.name, block, arg_list)
         end
         match(:define, CEVariable, :do, :block, :stop) do 
-<<<<<<< HEAD
-          |_, name, _, arg_list, _, block| 
-          CEFunctionDefNode.new(name, block)
-=======
           |_, name, _, arg_list, _, block, _| 
             CEFunctionDefNode.new(name.name, block)
->>>>>>> 8dfa1e12ea36d250863c043ce3bbad5cd6c55ea8
         end
       end
 
