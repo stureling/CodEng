@@ -3,9 +3,8 @@
 =begin
 TODO PRIORITY LIST
 
-1. Function def
-2. loops and function call
-3. everything else
+1. function call
+2. everything else
 =end
 
 class CEObject
