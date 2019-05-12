@@ -51,13 +51,23 @@ class CEFloat < CENumber
     end
 end
 
+class CEFunction < CEObject
+  def initialize(name, block)
+    @name, @block, @args = name, block
+  end
+
+  def assess(scope)
+    
+  end
+end
+
 class CEString < CEObject
   def initialize(string)
     @string = string
   end
 
   def assess(scope)
-    return @string
+    return self
   end
 end
 

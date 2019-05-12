@@ -26,17 +26,13 @@ class CEFunctionDefNode
   end
 
   def assess(scope)
-    scope.add_fun(self)
+    scope.add_fun(CEFunction.new)
   end
 end
 
 class CEFunctionCallNode
   def initialize(name, args=[])
     @name, @args = name, args
-  end
-
-  def prepare_scope(scope, vars, args)
-    
   end
 
   def assess(scope)
@@ -48,6 +44,7 @@ class CEFunctionCallNode
       new_scope.set_var(CEVariable.new(argument), @args[index])
       index += 1
     end
+
   end
 end
 
