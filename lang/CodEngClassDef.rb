@@ -3,9 +3,8 @@
 =begin
 TODO PRIORITY LIST
 
-1. Function def
-2. loops and function call
-3. everything else
+1. function call
+2. everything else
 =end
 
 class CEObject
@@ -52,12 +51,13 @@ class CEFloat < CENumber
 end
 
 class CEFunction < CEObject
-  def initialize(name, block)
-    @name, @block, @args = name, block
+  attr_reader :name, :block, :args
+  def initialize(name, block, args=[])
+    @name, @block, @args = name, block, args
   end
 
   def assess(scope)
-    
+    @block.each { |b| b.assess(scope) }
   end
 end
 

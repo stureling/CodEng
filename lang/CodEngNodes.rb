@@ -26,25 +26,24 @@ class CEFunctionDefNode
   end
 
   def assess(scope)
-    scope.add_fun()
+    scope.add_fun(CEFunction.new(@name, @block, @args))
   end
 end
 
 class CEFunctionCallNode
   def initialize(name, args=[])
-    @name, @args = name, args
+    @name, @args = name.name, args
   end
 
   def assess(scope)
     new_scope = CEScope.new("Function #{@name.to_s}", scope)
     fun = scope.get_fun(@name)
-    index = 0
-    while index < @args.size
-      argument = fun.args[index]
-      new_scope.set_var(CEVariable.new(argument), @args[index])
-      index += 1
+    if @args.size != 0
+      @args.zip(fun.args).each do |arg|
+        new_scope.set_var(arg[1], arg[0])
+      end
     end
-
+    fun.assess(new_scope)
   end
 end
 

@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby
+
+require_relative 'CodEngParse.rb'
+
+parser = CodEng.new
+if ARGV.length > 0 then
+  filename = ARGV[0]
+  program = File.new(filename).read
+  @CodEngParser.parse(program).assess(@@root_scope)
+else
+  parser.run
+end
+
+
