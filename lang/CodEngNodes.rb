@@ -55,7 +55,7 @@ class CEIfStatementNode
 
   def assess(scope)
     new_scope = CEScope.new("if", scope)
-    if @condition.assess(scope).value then
+    if assert_boolvalue(@condition.assess(scope)) then
       @block.each {|b| b.assess(new_scope)}
     end
   end
@@ -68,10 +68,10 @@ class CEIfElseStatementNode
 
   def assess(scope)
     new_scope = CEScope.new("if", scope)
-    if @condition.assess(scope).value then
-      @block.assess(new_scope)
+    if assert_boolvalue(@condition.assess(scope)) then
+      @block.each { |b| b.assess(new_scope) }      
     else
-      @else_block.assess(new_scope)
+      @else_block.assess(new_scope) { |b| b.assess(new_scope) }  
     end
   end
 end
@@ -83,7 +83,7 @@ class CEWhileLoopNode
 
   def assess(scope)
     new_scope = CEScope.new("while", scope)
-    while @condition.assess(scope).value do
+    while assert_boolvalue(@condition.assess(scope)) do
       @block.each { |b| b.assess(new_scope) }
     end
   end
