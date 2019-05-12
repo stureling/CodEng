@@ -31,9 +31,6 @@ end
 
 
 #SCOPE
-#
-# Scope ska skapas vid behov vid t.ex. for-loopar. For-loopen kommer köra assess(scope) på alla sina
-# subprograms men den kommer att ha skickat med ett nytt scope till sina subprograms. Ya get it?
 class CEScope
   def initialize(name, parent=nil)
     @name, @parent = name, parent
@@ -53,13 +50,15 @@ class CEScope
 
   def set_var(var, expr)
     @vars[var.name] = expr
+    puts @name, @vars
   end
 
   def get_var(var_name)
+    puts @name, @vars
     if @vars.has_key?(var_name)
       return @vars[var_name]
     elsif @parent != nil
-      return @parent.get(var_name)
+      return @parent.get_var(var_name)
     end
       raise "Variable '#{var_name.to_s}' not declared in current scope or parents"
   end
@@ -88,9 +87,20 @@ class CEScope
    
   def add_fun(function)
     @functions[function.name] = function
+    puts @functions
+  end
+
+  def get_fun(fun_name)
+    if @functions.has_key?(fun_name)
+      return @functions[fun_name]
+    elsif @parent != nil
+      return @parent.get_fun(fun_name)
+    end
+      raise "Function '#{fun_name.to_s}' not declared in current scope or parents"
   end
 
   #Helper functions
+
   def root
     #@parent == nil ? return self : return @parent.root
     if @parent == nil then
@@ -103,5 +113,4 @@ class CEScope
   def assess
     return self
   end
-
 end

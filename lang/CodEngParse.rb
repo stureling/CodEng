@@ -10,10 +10,12 @@ class CodEng
   def initialize
     @CodEngParser = Parser.new( "CodEng") do
       token(/\s+/)
+      token(/".*"/) { |string| CEString.new(string)}
       token(/^-?\d+\.\d+/) { |t| CEFloat.new(t.to_f) }
       token(/^-?\d+/) { |t| CEInteger.new(t.to_i) }
-      token(/start|begin/) { :start }
-      token(/stop|end/) { :stop }
+      token(/start/) { :start }
+      token(/stop/) { :stop }
+      token(/call/) { :call }
       token(/do/) { :do}
       token(/with/) { :with}
       token(/define/) { :define}
@@ -59,7 +61,7 @@ class CodEng
         match(:matched) { |m| m }
         match(:unmatched) { |m| m }
         match(:func_def) { |m| m }
-        match(:for_loop) { |m| m }
+        match(:func_call) { |m| m }
         match(:while_loop) { |m| m}
         match(:valid) { |m| m }
       end
@@ -81,17 +83,22 @@ class CodEng
 
       rule :func_def do
         match(:define, CEVariable, :with, :arg_list, :do, :block, :stop) do 
-          |_, name, _, arg_list, _, block| 
-          CEFunctionDefNode.new(name, block, arg_list)
+          |_, name, _, arg_list, _, block, _| 
+            CEFunctionDefNode.new(name.name, block, arg_list)
         end
-        match('define', CEVariable, 'do', :block, :stop) do 
-          |_, name, _, arg_list, _, block| 
-          CEFunctionDefNode.new(name, block)
+        match(:define, CEVariable, :do, :block, :stop) do 
+          |_, name, _, arg_list, _, block, _| 
+            CEFunctionDefNode.new(name.name, block)
         end
       end
 
+      rule :func_call do
+        match(:call, :var, :with, :arg_list) { |_, name, _, args| CEFunctionCallNode.new(name, args) }
+        match(:call, :var) { |_, name| CEFunctionCallNode.new(name) }
+      end
+
       rule :arg_list do
-        match(:arg_list, ',', :arg_decl) { |arg_list, _, args| arg_list.concat(args) }
+        match(:arg_list, ',', :arg_decl) { |arg_list, _, args| arg_list.concat([args]) }
         match(:arg_decl) { |m| [m] }
       end
 
@@ -170,17 +177,9 @@ class CodEng
       rule :exp do
         match('(', :expr, ')') { |_, m, _| m }
         match(:bool_const) { |m| m }
+        match(:num) { |m| m }
+        match(:string) { |m| m }
         match(:var) { |m| m }
-      end
-
-      rule :var do
-        match(CEVariable) { |var| var }
-        match(:num)
-      end
-
-      rule :num do
-        match(CEInteger) { |m| m }
-        match(CEFloat) { |m| m }
       end
 
       rule :bool_const do
@@ -188,6 +187,18 @@ class CodEng
         match(:false) { |_| CEBool.new(false) }
       end
 
+      rule :num do
+        match(CEInteger) { |m| m }
+        match(CEFloat) { |m| m }
+      end
+
+      rule :string do
+        match(CEString) { |m| m }
+      end
+
+      rule :var do
+        match(CEVariable) { |var| var }
+      end
     end
   end
 
@@ -247,8 +258,3 @@ class CodEng
     end
   end
 end
-
-
-a = CodEng.new
-#a.parse_file_by_line("testfile.txt")
-a.run

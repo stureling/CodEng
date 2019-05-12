@@ -51,12 +51,13 @@ class CEFloat < CENumber
 end
 
 class CEFunction < CEObject
-  def initialize(name, block)
-    @name, @block, @args = name, block
+  attr_reader :name, :block, :args
+  def initialize(name, block, args=[])
+    @name, @block, @args = name, block, args
   end
 
   def assess(scope)
-    
+    @block.each { |b| b.assess(scope) }
   end
 end
 

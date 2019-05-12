@@ -1,6 +1,9 @@
 x = 2
-i = 0
-while x < 10 do
-i = i + 1
-x = x + 2
+
+define fun1 with y do
+x = y + 3
 stop
+
+call fun1 with x
+
+x
