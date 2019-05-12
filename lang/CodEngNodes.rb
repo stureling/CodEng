@@ -55,7 +55,7 @@ class CEIfStatementNode
   def assess(scope)
     new_scope = CEScope.new("if", scope)
     if assert_boolvalue(@condition.assess(scope)) then
-      @block.assess(new_scope)
+      @block.each { |b| b.assess(new_scope) }      
     end
   end
 end

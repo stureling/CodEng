@@ -50,11 +50,9 @@ class CEScope
 
   def set_var(var, expr)
     @vars[var.name] = expr
-    puts @name, @vars
   end
 
   def get_var(var_name)
-    puts @name, @vars
     if @vars.has_key?(var_name)
       return @vars[var_name]
     elsif @parent != nil
@@ -77,7 +75,7 @@ class CEScope
     if @vars.has_key?(var_name)
       return true
     elsif @parent != nil
-      return @parent.get_scope(var_name)
+      return @parent.contains?(var_name)
     else
       return false
     end
@@ -87,7 +85,6 @@ class CEScope
    
   def add_fun(function)
     @functions[function.name] = function
-    puts @functions
   end
 
   def get_fun(fun_name)

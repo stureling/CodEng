@@ -1,5 +1,12 @@
-t = 2
-if t == 2 then
-q = x + i
-f = 2
+x = 10
+
+define fun1 do
+x
 stop
+
+define fun2 do
+x = 20
+call fun1
+stop
+
+call fun2

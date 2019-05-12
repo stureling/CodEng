@@ -51,7 +51,13 @@ class CodEng
       end
 
       rule :block do
-        match(:block, :statement) { |a, b| a.concat([b])}
+        match(:block, :statement) do |block, statement| 
+          if statement.class != Array
+            block.concat([statement])
+          else
+            block.concat(statement)
+          end
+        end
         match(:statement) { |m| [m] } 
       end
 
@@ -85,7 +91,7 @@ class CodEng
             CEFunctionDefNode.new(name.name, block, arg_list)
         end
         match(:define, CEVariable, :do, :block, :stop) do 
-          |_, name, _, arg_list, _, block, _| 
+          |_, name, _, block, _| 
             CEFunctionDefNode.new(name.name, block)
         end
       end
