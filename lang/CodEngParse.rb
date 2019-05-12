@@ -10,12 +10,13 @@ class CodEng
   def initialize
     @CodEngParser = Parser.new( "CodEng") do
       token(/\s+/)
-      token(/\\n/) 
-      token(/-?\d+\.\d+/) { |t| t.to_f }
-      token(/-?\d+/) { |t| t.to_i }
+      token(/^-?\d+\.\d+/) { |t| CEFloat.new(t.to_f) }
+      token(/^-?\d+/) { |t| CEInteger.new(t.to_i) }
       token(/start|begin/) { :start }
       token(/stop|end/) { :stop }
       token(/do/) { :do}
+      token(/with/) { :with}
+      token(/define/) { :define}
       token(/\*\*|to the power of/) { :exponent }
       token(/\+|plus/) { :plus }
       token(/-|minus/) { :minus }
@@ -34,7 +35,7 @@ class CodEng
       token(/<|less than/) { :less }
       token(/=/) { :assign_operator }
       token(/is/) { :assign_operator }
-      token(/[a-zA-Z_]+/) { |t| CEVariable.new(t) }
+      token(/[a-zA-Z_0-9]+/) { |t| CEVariable.new(t) }
       token(/./) { |t| t }
 
       start :program do
@@ -45,47 +46,64 @@ class CodEng
       
       rule :statements do
         match(:statements, :statement) { |master_list, statement| master_list.concat([statement]) }
-        match(:func_decl) { |m| [m] }
+        match(:statement) { |m| [m] }
       end
 
-      rule :func_decl do
-        match('define', CEVariable, 'with', :arg_list, 'do', :comp_stmt) do 
-          |_, name, _, arg_list, _, comp_stmt| 
-          CEFunctionDefNode.new(name, comp_stmt, arg_list)
+      rule :block do
+        #match(indentering, :statements, dedentering)
+        match(:block, :statement) { |a, b| a.concat([b])}
+        match(:statement) { |m| [m] } 
+      end
+
+      rule :statement do
+        match(:matched) { |m| m }
+        match(:unmatched) { |m| m }
+        match(:func_def) { |m| m }
+        match(:for_loop) { |m| m }
+        match(:while_loop) { |m| m}
+        match(:valid) { |m| m }
+      end
+
+      rule :unmatched do
+        match('if', :expr, 'then', :statement) { |_, l, _, s| CEIfStatement.new(l, s)}
+        match('if', :expr, 'then', :matched, 'else', :statement) do
+          |_, l, _, m, _, s| 
+          CEIfElseStatement.new(l, m, s)
         end
-        match(:statement) { |m| m}
+      end
+
+      rule :matched do
+        match('if', :expr, 'then', :matched, 'else', :matched) do
+          |_, l, _, m1, _, m2| 
+          CEIfElseStatement.new(l, m1, m2)
+        end
+      end
+
+      rule :func_def do
+        match(:define, CEVariable, :with, :arg_list, :do, :block, :stop) do 
+          |_, name, _, arg_list, _, block| 
+          CEFunctionDefNode.new(name, block, arg_list)
+        end
+        match('define', CEVariable, 'do', :block, :stop) do 
+          |_, name, _, arg_list, _, block| 
+          CEFunctionDefNode.new(name, block)
+        end
       end
 
       rule :arg_list do
-        match(:arg_list, ',', :arg_decl) { |arg_list, _, args| arg_list << args }
-        match(:arg_decl) { |m| m }
+        match(:arg_list, ',', :arg_decl) { |arg_list, _, args| arg_list.concat(args) }
+        match(:arg_decl) { |m| [m] }
       end
 
       rule :arg_decl do
         match(:var) { |m| m }
       end
 
-      rule :comp_stmt do
-        #match(indentering, :statements, dedentering)
-      
+
+      rule :while_loop do
+        match(:while, :expr, :block)
       end
 
-      rule :statement do
-        match(:matched) { |m| m }
-        match(:unmatched) { |m| m }
-      end
-
-      rule :unmatched do
-        match('if', :expr, 'then', :statement) { |_, l, _, s| CEIfStatement.new(l, s)}
-        match('if', :expr, 'then', :matched, 'else', :statement) { |_, l, _, m, _, s| CEIfElseStatement.new(l, m, s)}
-      end
-
-      rule :matched do
-        match('if', :expr, 'then', :matched, 'else', :matched) { |_, l, _, m1, _, m2| CEIfElseStatement.new(l, m1, m2)}
-        match(:for_loop) { |m| m }
-        match(:while_loop) { |m| m}
-        match(:valid) { |m| m }
-      end
 
       rule :valid do
         match(:assign) { |m| m }
@@ -162,8 +180,8 @@ class CodEng
       end
 
       rule :num do
-        match(Integer) { |m| CEInteger.new(m) }
-        match(Float) { |m| CEFloat.new(m) }
+        match(CEInteger) { |m| m }
+        match(CEFloat) { |m| m }
       end
 
       rule :bool_const do
@@ -183,6 +201,10 @@ class CodEng
     str = gets
     if done(str) then
       puts "Bye."
+    elsif str.chomp == "test"
+      str = File.new("./test.cod").read
+      puts "test => #{@CodEngParser.parse(str).assess(@@root_scope).inspect}"
+      run
     else
       puts "=> #{@CodEngParser.parse(str).assess(@@root_scope).inspect}"
       run

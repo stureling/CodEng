@@ -1,0 +1,5 @@
+x = 4
+define fun1 with y do
+true || false
+y + 1
+stop

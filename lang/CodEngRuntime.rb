@@ -86,7 +86,8 @@ class CEScope
 
   #Function functions
    
-  def add_fun(function, name)
+  def add_fun(function)
+    @functions[function.name] = function
   end
 
   #Helper functions
