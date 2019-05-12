@@ -12,14 +12,17 @@ class CodEng
       token(/\s+/)
       token(/^-?\d+\.\d+/) { |t| CEFloat.new(t.to_f) }
       token(/^-?\d+/) { |t| CEInteger.new(t.to_i) }
-      token(/start|begin/) { :start }
-      token(/stop|end/) { :stop }
+      token(/start/) { :start }
+      token(/begin/) { :start }
+      token(/stop/) { :stop }
+      token(/end/) { :stop }
       token(/do/) { :do}
       token(/with/) { :with}
       token(/define/) { :define}
       token(/while/) { :while}
       token(/if/) { :if}
       token(/else/) { :else}
+      token(/then/) { :then}
       token(/\*\*|to the power of/) { :exponent }
       token(/\+|plus/) { :plus }
       token(/-|minus/) { :minus }
@@ -42,12 +45,7 @@ class CodEng
       token(/./) { |t| t }
 
       start :program do
-        match(:statements) {|statements| CEProgramNode.new(statements) }
-      end
-      
-      rule :statements do
-        match(:statements, :statement) { |master_list, statement| master_list.concat([statement]) }
-        match(:statement) { |m| [m] }
+        match(:block) {|statements| CEProgramNode.new(statements) }
       end
 
       rule :block do
@@ -59,32 +57,31 @@ class CodEng
         match(:matched) { |m| m }
         match(:unmatched) { |m| m }
         match(:func_def) { |m| m }
-        match(:for_loop) { |m| m }
         match(:while_loop) { |m| m}
         match(:valid) { |m| m }
       end
 
       rule :unmatched do
-        match('if', :expr, 'then', :statement) { |_, l, _, s| CEIfStatement.new(l, s)}
-        match('if', :expr, 'then', :matched, 'else', :statement) do
-          |_, l, _, m, _, s| 
-          CEIfElseStatement.new(l, m, s)
+        match(:if, :expr, :then, :block, :stop) { |_, l, _, s, _| CEIfStatementNode.new(l, s)}
+        match(:if, :expr, :then, :block, :else, :block, :stop) do
+          |_, l, _, m, _, s, _| 
+          CEIfElseStatementNode.new(l, m, s)
         end
       end
 
-      rule :matched do
-        match('if', :expr, 'then', :matched, 'else', :matched) do
-          |_, l, _, m1, _, m2| 
-          CEIfElseStatement.new(l, m1, m2)
-        end
-      end
+      #rule :matched do
+      #  match(:if, :expr, :then, :matched, :else, :matched, :stop) do
+      #    |_, l, _, m1, _, m2, _| 
+      #    CEIfElseStatementNode.new(l, m1, m2)
+      #  end
+      #end
 
       rule :func_def do
         match(:define, CEVariable, :with, :arg_list, :do, :block, :stop) do 
           |_, name, _, arg_list, _, block| 
           CEFunctionDefNode.new(name, block, arg_list)
         end
-        match('define', CEVariable, 'do', :block, :stop) do 
+        match(:define, CEVariable, :do, :block, :stop) do 
           |_, name, _, arg_list, _, block| 
           CEFunctionDefNode.new(name, block)
         end

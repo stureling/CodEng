@@ -1,6 +1,5 @@
-x = 2
-i = 0
-while x < 10 do
-i = i + 1
-x = x + 2
+t = 2
+if t == 2 then
+q = x + i
+f = 2
 stop
