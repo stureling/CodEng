@@ -3,3 +3,9 @@ define fun1 with y do
 true || false
 y + 1
 stop
+
+i = 0
+while x < 8 do
+i = i + 1
+x = x + 1
+stop

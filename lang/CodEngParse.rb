@@ -17,6 +17,9 @@ class CodEng
       token(/do/) { :do}
       token(/with/) { :with}
       token(/define/) { :define}
+      token(/while/) { :while}
+      token(/if/) { :if}
+      token(/else/) { :else}
       token(/\*\*|to the power of/) { :exponent }
       token(/\+|plus/) { :plus }
       token(/-|minus/) { :minus }
@@ -40,8 +43,6 @@ class CodEng
 
       start :program do
         match(:statements) {|statements| CEProgramNode.new(statements) }
-        #match('start', :statements, 'stop') { |_, m, _| m }
-        #match(start, :statements, :block, stop) { |_, a, b, _| a, b }
       end
       
       rule :statements do
@@ -50,7 +51,6 @@ class CodEng
       end
 
       rule :block do
-        #match(indentering, :statements, dedentering)
         match(:block, :statement) { |a, b| a.concat([b])}
         match(:statement) { |m| [m] } 
       end
@@ -101,7 +101,10 @@ class CodEng
 
 
       rule :while_loop do
-        match(:while, :expr, :block)
+        match(:while, :expr, :do, :block, :stop) do 
+          |_, condition, _, block, _| 
+          CEWhileLoopNode.new(condition, block)
+        end
       end
 
 
@@ -112,10 +115,6 @@ class CodEng
 
       rule :assign do
         match(:var, :assign_operator, :expr) { |var, _, expr| CEVarAssignNode.new(var, expr) }
-        #match(:prefix, :var, 'is', :expr) { |_, var, _, expr| @vars[var] = expr } #
-      end
-
-      rule :prefix do
       end
 
       rule :expr do

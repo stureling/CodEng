@@ -52,42 +52,43 @@ class CEFunctionCallNode
 end
 
 class CEIfStatementNode
-  def initialize(logic_stmnt, block)
-    @logic_stmt, @block = logic_stmt, block
+  def initialize(condition, block)
+    @condition, @block = condition, block
   end
 
   def assess(scope)
     new_scope = CEScope.new("if", scope)
-    if @logic_stmt.assess(scope).value then
-      @stmt.assess(new_scope)
+    if @condition.assess(scope).value then
+      @block.each {|b| b.assess(new_scope)}
     end
   end
 end
 
 class CEIfElseStatementNode
-  def initialize(logic_comp, stmt, else_stmt)
-    @logic_comp, @stmt, @else_stmt = logic_comp, stmt, else_stmt
+  def initialize(condition, block, else_block)
+    @condition, @block, @else_block = condition, block, else_block
   end
 
   def assess(scope)
     new_scope = CEScope.new("if", scope)
-    if @logic_comp.value then
-      @stmt.assess(new_scope)
+    if @condition.assess(scope).value then
+      @block.assess(new_scope)
     else
-      @else_stmt.assess(new_scope)
+      @else_block.assess(new_scope)
     end
   end
 end
 
-class CEForLoopNode
-  def initialize
-      
-  end
-end
-
 class CEWhileLoopNode
-  def initialize
-      
+  def initialize(condition, block)
+    @condition, @block = condition, block
+  end
+
+  def assess(scope)
+    new_scope = CEScope.new("while", scope)
+    while @condition.assess(scope).value do
+      @block.assess(new_scope)
+    end
   end
 end
 
@@ -195,18 +196,6 @@ class CEVarAssignNode
     end
     scope.add_var(@var, @expr.assess(scope))
     return @expr.assess(scope)
-  end
-end
-
-class CEOutputNode
-  def initialize
-      
-  end
-end
-
-class CEInputNode
-  def initialize
-      
   end
 end
 
