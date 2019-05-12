@@ -26,7 +26,7 @@ class CEFunctionDefNode
   end
 
   def assess(scope)
-    scope.add_fun(CEFunction.new)
+    scope.add_fun()
   end
 end
 
