@@ -84,7 +84,7 @@ class CEWhileLoopNode
   def assess(scope)
     new_scope = CEScope.new("while", scope)
     while @condition.assess(scope).value do
-      @block.assess(new_scope)
+      @block.each { |b| b.assess(new_scope) }
     end
   end
 end
@@ -138,13 +138,14 @@ class CERelationOpNode
   end
 
   def assess(scope)
+    expr1, expr2 = @expr1.assess(scope), @expr2.assess(scope)
     case @op
-    when :eqllesser then return CEBool.new(@expr1.value <= @expr2.value)
-    when :eqlgreater then return CEBool.new(@expr1.value >= @expr2.value)
-    when :less then return CEBool.new(@expr1.value < @expr2.value)
-    when :greater then return CEBool.new(@expr1.value > @expr2.value)
-    when :equal then return CEBool.new(@expr1.value == @expr2.value)
-    when :notequal then return CEBool.new(@expr1.value != @expr2.value)
+    when :eqllesser then return CEBool.new(expr1.value <= expr2.value)
+    when :eqlgreater then return CEBool.new(expr1.value >= expr2.value)
+    when :less then return CEBool.new(expr1.value < expr2.value)
+    when :greater then return CEBool.new(expr1.value > expr2.value)
+    when :equal then return CEBool.new(expr1.value == expr2.value)
+    when :notequal then return CEBool.new(expr1.value != expr2.value)
     end
   end
 end

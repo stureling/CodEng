@@ -1,11 +1,6 @@
-x = 4
-define fun1 with y do
-true || false
-y + 1
-stop
-
+x = 2
 i = 0
-while x < 8 do
+while x < 10 do
 i = i + 1
-x = x + 1
+x = x + 2
 stop

@@ -101,10 +101,7 @@ class CEScope
   end
 
   def assess
-    #Probably a print function?
-  end
-
-  def for_tests
     return self
   end
+
 end
