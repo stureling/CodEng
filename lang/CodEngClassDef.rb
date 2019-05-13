@@ -78,7 +78,7 @@ end
 class CEBool < CEPrintable
   attr_reader :value
   def initialize(object)
-    @boolvalue = assert_boolvalue(object)
+    @value = assert_boolvalue(object)
   end
 
   def assess(scope)

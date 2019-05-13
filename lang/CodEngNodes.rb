@@ -138,8 +138,8 @@ class CERelationOpNode
   def assess(scope)
     expr1, expr2 = @expr1.assess(scope), @expr2.assess(scope)
     case @op
-    when :eqllesser then return CEBool.new(expr1.value <= expr2.value)
-    when :eqlgreater then return CEBool.new(expr1.value >= expr2.value)
+    when :less_or_eql then return CEBool.new(expr1.value <= expr2.value)
+    when :greater_or_eql then return CEBool.new(expr1.value >= expr2.value)
     when :less then return CEBool.new(expr1.value < expr2.value)
     when :greater then return CEBool.new(expr1.value > expr2.value)
     when :equal then return CEBool.new(expr1.value == expr2.value)
