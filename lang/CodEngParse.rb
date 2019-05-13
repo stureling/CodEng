@@ -9,6 +9,7 @@ class CodEng
   
   def initialize
     @CodEngParser = Parser.new( "CodEng") do
+      #Whitespaces
       token(/\s+/)
 
       #Comments
@@ -38,6 +39,9 @@ class CodEng
       token(/then/) { :then }
       token(/writeln/) { :puts }
       token(/write/) { :print }
+      token(/\(/) {:left_para}
+      token(/\)/) {:right_para}
+      token(/,/) {:comma}
       
       #Operators
       token(/\*\*/) { :exponent }
@@ -73,6 +77,8 @@ class CodEng
 
       #Variables
       token(/[a-zA-Z_0-9]+/) { |t| CEVariable.new(t) }
+
+      #Exceptions
       token(/./) { |t| raise "#{t} is not a keyword or valid variable name, unable to lex" }
 
       start :program do
@@ -124,7 +130,7 @@ class CodEng
       end
 
       rule :arg_list do
-        match(:arg_list, ',', :arg_decl) do |arg_list, _, arg|
+        match(:arg_list, :comma, :arg_decl) do |arg_list, _, arg|
           if arg.class != Array
             arg_list.concat([arg])
           else
@@ -146,8 +152,8 @@ class CodEng
       end
 
       rule :print_statement do
-        match(:print, '(', :arg_list, ')' ) { |_, _, block, _| CEPrintNode.new(block) }
-        match(:puts, '(', :arg_list, ')' ) { |_, _, block, _| CEPrintNode.new(block, true) }
+        match(:print, :left_para, :arg_list, :right_para ) { |_, _, block, _| CEPrintNode.new(block) }
+        match(:puts, :left_para, :arg_list, :right_para ) { |_, _, block, _| CEPrintNode.new(block, true) }
       end
 
       rule :valid do
@@ -210,7 +216,7 @@ class CodEng
       end
 
       rule :exp do
-        match('(', :expr, ')') { |_, m, _| m }
+        match(:left_para, :expr, :right_para) { |_, m, _| m }
         match(:bool_const) { |m| m }
         match(:num) { |m| m }
         match(:string) { |m| m }
