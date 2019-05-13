@@ -235,7 +235,8 @@ class CodEng
     if done(str) then
       puts "Bye."
     elsif str.chomp == "test"
-      str = File.new("./test.cod").read
+      current_dir = File.dirname(__FILE__)
+      str = File.new(current_dir + "/test.cod").read
       puts "test => #{@CodEngParser.parse(str).assess(root_scope).inspect}"
       run
     else

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require_relative 'CodEngParse.rb'
+require_relative '../lang/CodEngParse.rb'
 
 parser = CodEng.new
 if ARGV.length > 0
