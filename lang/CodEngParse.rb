@@ -22,8 +22,6 @@ class CodEng
       token(/^-?\d+/) { |t| CEInteger.new(t.to_i) }
       
       #Keywords
-      token(/start/) { :start }
-      token(/begin/) { :start }
       token(/stop/) { :stop }
       token(/end/) { :stop }
       token(/call/) { :call }
@@ -34,26 +32,40 @@ class CodEng
       token(/if/) { :if }
       token(/else/) { :else }
       token(/then/) { :then }
+      token(/writeln/) { :puts }
       token(/write/) { :print }
-      token(/shout/) { :puts }
-
+      
       #Operators
-      token(/\*\*|to the power of/) { :exponent }
-      token(/\+|plus/) { :plus }
-      token(/-|minus/) { :minus }
-      token(/\*|times/) { :mult }
-      token(/\/|over/) { :div }
+      token(/\*\*/) { :exponent }
+      token(/to the power of/) { :exponent }
+      token(/\+/) { :plus }
+      token(/plus/) { :plus }
+      token(/-/) { :minus }
+      token(/minus/) { :minus }
+      token(/\*/) { :mult }
+      token(/times/) { :mult }
+      token(/\//) { :div }
+      token(/over/) { :div }
       token(/true/) { :true }
       token(/false/) { :false }
-      token(/&&|and/) { :and }
-      token(/\|\||or/) { :or }
-      token(/!=|not equal to/) { :notequal }
-      token(/==|equal to/) { :equal }
-      token(/<=|equal or less than|less than or equal to/) { :eqllesser }
-      token(/>=|equal or greater than|greater than or equal to/) { :eqlgreater }
-      token(/!|not /) { :not }
-      token(/>|greater than/) { :greater }
-      token(/<|less than/) { :less }
+      token(/&&/) { :and }
+      token(/and/) { :and }
+      token(/\|\|/) { :or }
+      token(/or/) { :or }
+      token(/!=/) { :notequal }
+      token(/not equal to/) { :notequal }
+      token(/==/) { :equal }
+      token(/equal to/) { :equal }
+      token(/<=/) { :less_or_eql }
+      token(/less than or equal to/) { :less_or_eql }
+      token(/>=/) { :greater_or_eql }
+      token(/greater than or equal to/) { :greater_or_eql }
+      token(/!/) { :not }
+      token(/not/) { :not }
+      token(/>/) { :greater }
+      token(/greater than/) { :greater }
+      token(/</) { :less }
+      token(/less than/) { :less }
       token(/=/) { :assign_operator }
       token(/is/) { :assign_operator }
 
@@ -124,7 +136,6 @@ class CodEng
         match(:statement) { |m| m }
       end
 
-
       rule :while_loop do
         match(:while, :expr, :do, :block, :stop) do 
           |_, condition, _, block, _| 
@@ -168,9 +179,9 @@ class CodEng
 
       rule :compare_relops do
         match(:compare_relops, :less ,:arithmetic_expr) { |a, b, c| CERelationOpNode.new(a, b, c) }
-        match(:compare_relops, :eqllesser ,:arithmetic_expr) { |a, b, c| CERelationOpNode.new(a, b, c) }
+        match(:compare_relops, :less_or_eql ,:arithmetic_expr) { |a, b, c| CERelationOpNode.new(a, b, c) }
         match(:compare_relops, :greater ,:arithmetic_expr) { |a, b, c| CERelationOpNode.new(a, b, c) }
-        match(:compare_relops, :eqlgreater ,:arithmetic_expr) { |a, b, c| CERelationOpNode.new(a, b, c) }
+        match(:compare_relops, :greater_or_eql ,:arithmetic_expr) { |a, b, c| CERelationOpNode.new(a, b, c) }
         match(:arithmetic_expr) { |m| m }
       end
 

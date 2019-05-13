@@ -3,6 +3,7 @@
 require_relative '../lang/CodEngParse.rb'
 
 parser = CodEng.new
+parser.log(false)
 if ARGV.length > 0
   if ARGV[0][0] == "/"
     filename = ARGV[0]
@@ -10,10 +11,8 @@ if ARGV.length > 0
     filename = Dir.pwd + '/' + ARGV[0]
   end
   program = File.new(filename).read
-  #parser.log(false)
   parser.CodEngParser.parse(program).assess(CEScope.new('root'))
 else
-  #parser.log(false)
   parser.run
 end
 
