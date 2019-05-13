@@ -124,8 +124,7 @@ class CEArithmeticOpNode
       if new_value.class == Integer then return CEInteger.new(new_value)
       elsif new_value.class == Float then return CEFloat.new(new_value)
       end
-    else
-      raise "#{object} is of wrong type, should be CEInteger or CEFloat"
+      raise "#{expr1} or #{expr2} is of wrong type, should be CEInteger or CEFloat"
     end
   end
 end
@@ -197,7 +196,21 @@ class CEVarAssignNode
 end
 
 class CEPrintNode
-  def initialize
-      
+  def initialize(args=[], newline=false)
+    @args, @newline = args, newline
+  end
+
+  def assess(scope)
+    @args.each do |arg|
+      expr = arg.assess(scope)
+      if expr.is_a?(CEPrintable)
+        expr = expr.value
+      end
+      if @newline
+        puts expr
+      else
+        print expr
+      end
+    end
   end
 end

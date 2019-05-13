@@ -1,7 +1,7 @@
 x = 10
 
 define fun1 do
-x
+write(x)
 stop
 
 define fun2 do
@@ -10,3 +10,4 @@ call fun1
 stop
 
 call fun2
+shout("hej", 10)

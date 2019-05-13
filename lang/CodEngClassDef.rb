@@ -26,7 +26,10 @@ class CEVariable < CEObject
   end
 end
 
-class CENumber < CEObject
+class CEPrintable < CEObject
+end
+
+class CENumber < CEPrintable
 end
 
 class CEInteger < CENumber
@@ -61,9 +64,10 @@ class CEFunction < CEObject
   end
 end
 
-class CEString < CEObject
+class CEString < CEPrintable
+  attr_reader :value
   def initialize(string)
-    @string = string
+    @value = string
   end
 
   def assess(scope)
@@ -71,7 +75,8 @@ class CEString < CEObject
   end
 end
 
-class CEBool < CEObject
+class CEBool < CEPrintable
+  attr_reader :value
   def initialize(object)
     @boolvalue = assert_boolvalue(object)
   end
@@ -79,9 +84,4 @@ class CEBool < CEObject
   def assess(scope)
     return self
   end
-  
-  def value
-    return @boolvalue
-  end
-
 end

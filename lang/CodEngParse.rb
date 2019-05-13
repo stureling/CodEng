@@ -4,27 +4,40 @@ require_relative 'rdparse_debug.rb'
 require_relative 'CodEngNodes.rb'
 
 class CodEng
+  attr_accessor :CodEngParser
 
-  @@root_scope = CEScope.new('root')
   
   def initialize
     @CodEngParser = Parser.new( "CodEng") do
       token(/\s+/)
-      token(/".*"/) { |string| CEString.new(string)}
+
+      #Comments
+      token(/""".*"""/)
+      
+      #Strings
+      token(/".*"/) { |t| CEString.new(t[1...-1])}
+      
+      #Numbers
       token(/^-?\d+\.\d+/) { |t| CEFloat.new(t.to_f) }
       token(/^-?\d+/) { |t| CEInteger.new(t.to_i) }
+      
+      #Keywords
       token(/start/) { :start }
       token(/begin/) { :start }
       token(/stop/) { :stop }
       token(/end/) { :stop }
       token(/call/) { :call }
-      token(/do/) { :do}
-      token(/with/) { :with}
-      token(/define/) { :define}
-      token(/while/) { :while}
-      token(/if/) { :if}
-      token(/else/) { :else}
-      token(/then/) { :then}
+      token(/do/) { :do }
+      token(/with/) { :with }
+      token(/define/) { :define }
+      token(/while/) { :while }
+      token(/if/) { :if }
+      token(/else/) { :else }
+      token(/then/) { :then }
+      token(/write/) { :print }
+      token(/shout/) { :puts }
+
+      #Operators
       token(/\*\*|to the power of/) { :exponent }
       token(/\+|plus/) { :plus }
       token(/-|minus/) { :minus }
@@ -43,6 +56,8 @@ class CodEng
       token(/<|less than/) { :less }
       token(/=/) { :assign_operator }
       token(/is/) { :assign_operator }
+
+      #Variables
       token(/[a-zA-Z_0-9]+/) { |t| CEVariable.new(t) }
       token(/./) { |t| t }
 
@@ -62,28 +77,21 @@ class CodEng
       end
 
       rule :statement do
-        match(:matched) { |m| m }
-        match(:unmatched) { |m| m }
+        match(:if_statement) { |m| m }
         match(:func_def) { |m| m }
         match(:func_call) { |m| m }
         match(:while_loop) { |m| m}
+        match(:print_statement) { |m| m }
         match(:valid) { |m| m }
       end
 
-      rule :unmatched do
+      rule :if_statement do
         match(:if, :expr, :then, :block, :stop) { |_, l, _, s, _| CEIfStatementNode.new(l, s)}
         match(:if, :expr, :then, :block, :else, :block, :stop) do
           |_, l, _, m, _, s, _| 
           CEIfElseStatementNode.new(l, m, s)
         end
       end
-
-      #rule :matched do
-      #  match(:if, :expr, :then, :matched, :else, :matched, :stop) do
-      #    |_, l, _, m1, _, m2, _| 
-      #    CEIfElseStatementNode.new(l, m1, m2)
-      #  end
-      #end
 
       rule :func_def do
         match(:define, CEVariable, :with, :arg_list, :do, :block, :stop) do 
@@ -102,12 +110,18 @@ class CodEng
       end
 
       rule :arg_list do
-        match(:arg_list, ',', :arg_decl) { |arg_list, _, args| arg_list.concat([args]) }
+        match(:arg_list, ',', :arg_decl) do |arg_list, _, arg|
+          if arg.class != Array
+            arg_list.concat([arg])
+          else
+            arg_list.concat(arg)
+          end
+        end
         match(:arg_decl) { |m| [m] }
       end
 
       rule :arg_decl do
-        match(:var) { |m| m }
+        match(:statement) { |m| m }
       end
 
 
@@ -118,6 +132,10 @@ class CodEng
         end
       end
 
+      rule :print_statement do
+        match(:print, '(', :arg_list, ')' ) { |_, _, block, _| CEPrintNode.new(block) }
+        match(:puts, '(', :arg_list, ')' ) { |_, _, block, _| CEPrintNode.new(block, true) }
+      end
 
       rule :valid do
         match(:assign) { |m| m }
@@ -160,7 +178,7 @@ class CodEng
 	      match(:arithmetic_expr, :plus, :term) { |a, b, c| CEArithmeticOpNode.new(a, b, c) }
         match('add', :arithmetic_expr, 'to', :term) { |_, a, _, b| CEArithmeticOpNode.new(a, :plus, b) }
         match(:arithmetic_expr, :minus, :term) { |a, b, c| CEArithmeticOpNode.new(a, b, c) }
-        match('subtract', :arithmetic_expr, 'from', :term) { |_, a, _, b| CEArithmeticOpNode.new(a, :minus, b) }
+        match('subtract', :arithmetic_expr, 'from', :term) { |_, a, _, b| CEArithmeticOpNode.new(b, :minus, a) }
         match(:term) { |m| m }
       end
 
@@ -213,14 +231,15 @@ class CodEng
   def run
     print "[CodEng] "
     str = gets
+    root_scope = CEScope.new('root')
     if done(str) then
       puts "Bye."
     elsif str.chomp == "test"
       str = File.new("./test.cod").read
-      puts "test => #{@CodEngParser.parse(str).assess(@@root_scope).inspect}"
+      puts "test => #{@CodEngParser.parse(str).assess(root_scope).inspect}"
       run
     else
-      puts "=> #{@CodEngParser.parse(str).assess(@@root_scope).inspect}"
+      puts "=> #{@CodEngParser.parse(str).assess(root_scope).inspect}"
       run
     end
   end
@@ -230,6 +249,7 @@ class CodEng
     lines = f.readlines
     i = 0
     answers = {}
+    root_scope = CEScope.new('root')
     while i < lines.length
       str = lines[i]
       if str == "\n"
@@ -240,13 +260,13 @@ class CodEng
         index = str.index("#")
         if index > 0 then
           str = str.slice(0...index)
-          answers[(i + 1)] = "#{@CodEngParser.parse(str).assess(@@root_scope).value}"
+          answers[(i + 1)] = "#{@CodEngParser.parse(str).assess(root_scope).value}"
           i += 1
         else
           i += 1
         end
       else
-        answers[(i + 1)] = "#{@CodEngParser.parse(str).assess(@@root_scope).value}"
+        answers[(i + 1)] = "#{@CodEngParser.parse(str).assess(root_scope).value}"
         i += 1
       end
     end
