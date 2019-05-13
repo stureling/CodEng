@@ -114,13 +114,17 @@ class CodEng
       end
 
       rule :func_def do
-        match(:define, CEVariable, :with, :arg_list, :do, :block, :stop) do 
-          |_, name, _, arg_list, _, block, _| 
+        match(:define, CEVariable, :with, :arg_list, :block, :stop) do 
+          |_, name, _, arg_list, block, _| 
             CEFunctionDefNode.new(name.name, block, arg_list)
         end
-        match(:define, CEVariable, :do, :block, :stop) do 
-          |_, name, _, block, _| 
+        match(:define, CEVariable, :block, :stop) do 
+          |_, name, block, _| 
             CEFunctionDefNode.new(name.name, block)
+        end
+        match(:define, CEVariable, :stop) do 
+          |_, name, _| 
+            CEFunctionDefNode.new(name.name, [])
         end
       end
 

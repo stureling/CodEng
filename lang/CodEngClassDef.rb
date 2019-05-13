@@ -13,6 +13,9 @@ class CEObject
 end
 
 class CENil
+  def assess(_)
+    return self
+  end
 end
 
 class CEVariable < CEObject
@@ -60,6 +63,9 @@ class CEFunction < CEObject
   end
 
   def assess(scope)
+    if @block.size == 0
+      return CENil
+    end
     @block.each { |b| b.assess(scope) }
   end
 end

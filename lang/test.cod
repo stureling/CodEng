@@ -1,12 +1,13 @@
 x = 10
-define fun1 do
+define fun1
 x
 stop
 
-define fun2 do
+define fun2
 x = 20
 call fun1
 stop
 
 call fun2
 write(x)
+
