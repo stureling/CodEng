@@ -21,6 +21,10 @@ class CodEng
       token(/^-?\d+\.\d+/) { |t| CEFloat.new(t.to_f) }
       token(/^-?\d+/) { |t| CEInteger.new(t.to_i) }
       
+      #Boolean values
+      token(/true/) { |t| CEBool.new(t) }
+      token(/false/) { |t| CEBool.new(t) }
+
       #Keywords
       token(/stop/) { :stop }
       token(/end/) { :stop }
@@ -46,8 +50,6 @@ class CodEng
       token(/times/) { :mult }
       token(/\//) { :div }
       token(/over/) { :div }
-      token(/true/) { :true }
-      token(/false/) { :false }
       token(/&&/) { :and }
       token(/and/) { :and }
       token(/\|\|/) { :or }
@@ -71,7 +73,7 @@ class CodEng
 
       #Variables
       token(/[a-zA-Z_0-9]+/) { |t| CEVariable.new(t) }
-      token(/./) { |t| t }
+      token(/./) { |t| raise "#{t} is not a keyword or valid variable name, unable to lex" }
 
       start :program do
         match(:block) {|statements| CEProgramNode.new(statements) }
@@ -216,8 +218,7 @@ class CodEng
       end
 
       rule :bool_const do
-        match(:true) { |_| CEBool.new(true) }
-        match(:false) { |_| CEBool.new(false) }
+        match(CEBool) { |m| m }
       end
 
       rule :num do
