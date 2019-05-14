@@ -69,7 +69,7 @@ class CEIfElseStatementNode
     if assert_boolvalue(@condition.assess(scope)) then
       @block.each { |b| b.assess(new_scope) }      
     else
-      @else_block.assess(new_scope) { |b| b.assess(new_scope) }  
+      @else_block.each { |b| b.assess(new_scope) }  
     end
   end
 end
