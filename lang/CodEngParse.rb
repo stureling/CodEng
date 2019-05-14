@@ -23,8 +23,8 @@ class CodEng
       token(/^-?\d+/) { |t| CEInteger.new(t.to_i) }
       
       #Boolean values
-      token(/true/) { |t| CEBool.new(t) }
-      token(/false/) { |t| CEBool.new(t) }
+      token(/true/) { CEBool.new(true) }
+      token(/false/) { CEBool.new(false) }
 
       #Keywords
       token(/stop/) { :stop }
