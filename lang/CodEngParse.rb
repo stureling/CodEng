@@ -23,8 +23,13 @@ class CodEng
       token(/^-?\d+/) { |t| CEInteger.new(t.to_i) }
       
       #Boolean values
+<<<<<<< HEAD
+      token(/true/) { |t| CEBool.new(true) }
+      token(/false/) { |t| CEBool.new(false) }
+=======
       token(/true/) { CEBool.new(true) }
       token(/false/) { CEBool.new(false) }
+>>>>>>> ab515694b4183444beb93b124f8e62479d0d4b3a
 
       #Keywords
       token(/stop/) { :stop }
@@ -114,17 +119,13 @@ class CodEng
       end
 
       rule :func_def do
-        match(:define, CEVariable, :with, :arg_list, :block, :stop) do 
-          |_, name, _, arg_list, block, _| 
+        match(:define, CEVariable, :with, :arg_list, :do, :block, :stop) do 
+          |_, name, _, arg_list, _, block, _| 
             CEFunctionDefNode.new(name.name, block, arg_list)
         end
-        match(:define, CEVariable, :block, :stop) do 
-          |_, name, block, _| 
+        match(:define, CEVariable, :do, :block, :stop) do 
+          |_, name, _, block, _| 
             CEFunctionDefNode.new(name.name, block)
-        end
-        match(:define, CEVariable, :stop) do 
-          |_, name, _| 
-            CEFunctionDefNode.new(name.name, [])
         end
       end
 

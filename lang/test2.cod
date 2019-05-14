@@ -1,9 +1,11 @@
-writeln(2 < 3)
-writeln(2 > 3)
-writeln(4 > 2)
-writeln(4 <= 4)
-writeln(3 == 3)
-writeln(3 != 3)
-writeln(5 >= 6)
-writeln(5 >= 5)
-writeln(5 >= 4)
+i = 0
+loop = true
+while loop do
+  if i < 7 then
+    i = i + 1
+  else
+    writeln(i)
+    loop = false
+  stop
+stop
+
