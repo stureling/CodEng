@@ -250,51 +250,20 @@ class CodEng
     ["quit","exit","bye",""].include?(str.chomp)
   end
 
-  def run
+  def run(scope)
+    # CodEng interactive shell
     print "[CodEng] "
     str = gets
-    root_scope = CEScope.new('root')
     if done(str) then
       puts "Bye."
     elsif str.chomp == "test"
-      current_dir = File.dirname(__FILE__)
-      str = File.new(current_dir + "/test.cod").read
-      puts "test => #{@CodEngParser.parse(str).assess(root_scope).inspect}"
-      run
+      str = File.new(File.dirname(__FILE__) + "/test.cod").read
+      puts "test => #{@CodEngParser.parse(str).assess(scope).inspect}"
+      run(scope)
     else
-      puts "=> #{@CodEngParser.parse(str).assess(root_scope).inspect}"
-      run
+      puts "=> #{@CodEngParser.parse(str).assess(scope).inspect}"
+      run(scope)
     end
-  end
-
-  def parse_file_by_line(filename)
-    f = File.new(filename)
-    lines = f.readlines
-    i = 0
-    answers = {}
-    root_scope = CEScope.new('root')
-    while i < lines.length
-      str = lines[i]
-      if str == "\n"
-        i += 1
-      elsif str.include?("#")
-        # will see everything with # in front of it as comments
-        # even in strings
-        index = str.index("#")
-        if index > 0 then
-          str = str.slice(0...index)
-          answers[(i + 1)] = "#{@CodEngParser.parse(str).assess(root_scope).value}"
-          i += 1
-        else
-          i += 1
-        end
-      else
-        answers[(i + 1)] = "#{@CodEngParser.parse(str).assess(root_scope).value}"
-        i += 1
-      end
-    end
-    answers.each{|key,value|puts "#{lines[key-1].chomp} => #{value}"}
-    puts "#{filename} has been successfully parsed."
   end
         
   def log(state = true)

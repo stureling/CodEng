@@ -8,17 +8,20 @@ TODO PRIORITY LIST
 =end
 
 class CEObject
+  # Base class for all objects
     def name
     end
 end
 
 class CENil
+  # Base class for no object
   def assess(_)
     return self
   end
 end
 
 class CEVariable < CEObject
+  # Variable name holder, used by CEVarAssignNode to assign an expression to a variable.
   attr_reader :name
   def initialize(name)
     @name = name.to_sym
@@ -30,9 +33,11 @@ class CEVariable < CEObject
 end
 
 class CEPrintable < CEObject
+  # Base class for object with printable values
 end
 
 class CENumber < CEPrintable
+  # Base class for numbers
 end
 
 class CEInteger < CENumber
@@ -57,6 +62,8 @@ class CEFloat < CENumber
 end
 
 class CEFunction < CEObject
+  # Contains a code block and arguments. 
+  # Created by CEFunctionDef and assessed by CEFunctionCall
   attr_reader :name, :block, :args
   def initialize(name, block, args=[])
     @name, @block, @args = name, block, args

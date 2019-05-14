@@ -2,6 +2,8 @@
 
 require_relative '../lang/CodEngParse.rb'
 
+# Used to run CodEng from anywhere on the computer
+
 parser = CodEng.new
 parser.log(false)
 if ARGV.length > 0
@@ -13,7 +15,7 @@ if ARGV.length > 0
   program = File.new(filename).read
   parser.CodEngParser.parse(program).assess(CEScope.new('root'))
 else
-  parser.run
+  parser.run(CEScope.new('root'))
 end
 
 

@@ -5,20 +5,22 @@ require_relative 'CodEngClassDef.rb'
 #I noderna kommer alla andra klasser att kallas och 
 
 class CEProgramNode
+  # Top layer node, contains a list of other nodes.
   def initialize(statements)
     @statements = statements
   end
 
   def assess(scope)
-    temp = 1
+    last_statement = CENil
     @statements.each do |statement|
-      temp = statement.assess(scope)
+      last_statement = statement.assess(scope)
     end
-    return temp
+    return last_statement
   end
 end
 
 class CEFunctionDefNode
+  # Defines functions
   attr_reader :name, :block, :args
   def initialize(name, block, args=[])
     @name, @block, @args = name, block, args
@@ -30,6 +32,7 @@ class CEFunctionDefNode
 end
 
 class CEFunctionCallNode
+  # Translates arguments and then calls the function
   def initialize(name, args=[])
     @name, @args = name.name, args
   end
@@ -47,6 +50,7 @@ class CEFunctionCallNode
 end
 
 class CEIfStatementNode
+  # Assesses the block if the condition is true
   def initialize(condition, block)
     @condition, @block = condition, block
   end
@@ -60,6 +64,7 @@ class CEIfStatementNode
 end
 
 class CEIfElseStatementNode
+  # Assesses the block if the condition is true, otherwise the else_block is assessed.
   def initialize(condition, block, else_block)
     @condition, @block, @else_block = condition, block, else_block
   end
@@ -75,6 +80,7 @@ class CEIfElseStatementNode
 end
 
 class CEWhileLoopNode
+  # Assesses a block continously while the condition is met
   def initialize(condition, block)
     @condition, @block = condition, block
   end
@@ -88,6 +94,7 @@ class CEWhileLoopNode
 end
 
 class CENotNode
+  # Assesses an expressions boolean value and reverses it
   def initialize(expr)
       #Logic NOT
       @expr = expr
@@ -104,7 +111,7 @@ class CENotNode
 end
 
 class CEArithmeticOpNode
-  #This node handles all basic math
+  # This node handles all basic math
   def initialize(expr1, op, expr2)
     @expr1, @expr2 = expr1, expr2
     @op = op
@@ -129,6 +136,7 @@ class CEArithmeticOpNode
 end
 
 class CERelationOpNode
+  # This node handles comparisons between data types
   def initialize(expr1, op, expr2)
     @expr1, @expr2 = expr1, expr2
     @op = op
@@ -148,7 +156,7 @@ class CERelationOpNode
 end
 
 class CELogicANDNode
-  #Logical AND
+  # Assesses 2 expressions boolean values and returns true if both are true, otherwise false.
   def initialize(expr1, expr2)
       @expr1, @expr2 = expr1, expr2
   end
@@ -164,7 +172,7 @@ class CELogicANDNode
 end
 
 class CELogicORNode
-    #Logical OR
+  # Assesses 2 expressions boolean values and returns true if at least one is true, otherwise false.
   def initialize(expr1, expr2)
     @expr1, @expr2 = expr1, expr2
   end
@@ -180,6 +188,7 @@ class CELogicORNode
 end
 
 class CEVarAssignNode
+  # Assigns varibles to the scope
   def initialize(var, expr)
       @var = var
       @expr = expr
@@ -195,6 +204,7 @@ class CEVarAssignNode
 end
 
 class CEPrintNode
+  # Prints printable values, if the object is not a printable a description of the object  is printed instead
   def initialize(args=[], newline=false)
     @args, @newline = args, newline
   end
@@ -206,9 +216,9 @@ class CEPrintNode
         expr = expr.value
       end
       if @newline
-        puts expr
+        puts expr.inspect
       else
-        print expr
+        print expr.inspect
       end
     end
   end
@@ -216,6 +226,7 @@ end
 
 #SCOPE
 class CEScope
+  # Contains, sets, and retrives variables and functions
   def initialize(name, parent=nil)
     @name, @parent = name, parent
     @vars = {}
@@ -246,6 +257,7 @@ class CEScope
   end
 
   def get_scope(var_name)
+    # Returns the scope containing the variable, raises and error if variable is not found.
     if @vars.has_key?(var_name)
       return self
     elsif @parent != nil
@@ -256,6 +268,7 @@ class CEScope
   end
 
   def contains?(var_name)
+    # Returns true if the variable is declared in the current scope or parents.
     if @vars.has_key?(var_name)
       return true
     elsif @parent != nil
@@ -283,7 +296,7 @@ class CEScope
   #others
 
   def root
-    #@parent == nil ? return self : return @parent.root
+    # Return the root scope
     if @parent == nil then
       return self
     else 
@@ -294,6 +307,7 @@ end
 
 #HELPER FUNCTIONS
 def assert_boolvalue(object)
+  # Asserts the boolean value of an object, if the type can't be translated to a boolean an error is thrown.
   classtype = object.class
 
   if classtype == CEInteger then
