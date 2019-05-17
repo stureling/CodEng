@@ -23,13 +23,8 @@ class CodEng
       token(/^-?\d+/) { |t| CEInteger.new(t.to_i) }
       
       #Boolean values
-<<<<<<< HEAD
-      token(/true/) { |t| CEBool.new(true) }
-      token(/false/) { |t| CEBool.new(false) }
-=======
       token(/true/) { CEBool.new(true) }
       token(/false/) { CEBool.new(false) }
->>>>>>> ab515694b4183444beb93b124f8e62479d0d4b3a
 
       #Keywords
       token(/stop/) { :stop }
