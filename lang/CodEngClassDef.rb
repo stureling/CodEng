@@ -1,16 +1,7 @@
 #!/usr/bin/env ruby
 
-=begin
-TODO PRIORITY LIST
-
-1. function call
-2. everything else
-=end
-
 class CEObject
   # Base class for all objects
-    def name
-    end
 end
 
 class CENil

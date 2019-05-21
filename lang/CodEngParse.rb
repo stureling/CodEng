@@ -42,6 +42,8 @@ class CodEng
       token(/\(/) {:left_para}
       token(/\)/) {:right_para}
       token(/,/) {:comma}
+      token(/nothing/) {CENil.new}
+      token(/empty/) {CENil.new}
       
       #Operators
       token(/\*\*/) { :exponent }
@@ -221,6 +223,7 @@ class CodEng
         match(:num) { |m| m }
         match(:string) { |m| m }
         match(:var) { |m| m }
+        match(:nil) { |m| m }
       end
 
       rule :bool_const do
@@ -238,6 +241,10 @@ class CodEng
 
       rule :var do
         match(CEVariable) { |var| var }
+      end
+
+      rule :nil do
+        match(CENil) { |m| m }
       end
     end
   end
