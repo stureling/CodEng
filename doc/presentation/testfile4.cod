@@ -1,0 +1,2 @@
+var = not ((true || false) && false) || false
+writeln(var)

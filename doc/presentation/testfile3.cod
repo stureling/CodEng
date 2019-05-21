@@ -1,0 +1,9 @@
+define squareroot with number do
+root = number ** 0.5
+writeln(root)
+stop
+
+call squareroot with 4
+call squareroot with 9
+call squareroot with 36
+call squareroot with 50
