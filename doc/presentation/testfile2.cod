@@ -1,0 +1,16 @@
+define foo with bar do
+crow is 2 to the power of bar
+crowbar is crow plus bar
+writeln(crowbar)
+stop
+
+call foo with 1
+call foo with 2
+call foo with 3
+call foo with 4
+call foo with 5
+call foo with 6
+call foo with 7
+call foo with 8
+call foo with 9
+call foo with 10

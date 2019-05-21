@@ -1,0 +1,11 @@
+i = 0
+loop = true
+while loop do
+  if i < 7 then
+    i = i + 1
+  else
+    writeln(i)
+    loop = false
+  stop
+stop
+
