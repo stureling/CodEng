@@ -13,10 +13,11 @@ class CodEng
       token(/\s+/)
 
       #Comments
+      token(/#.*\\n/)
       token(/""".*"""/)
       
       #Strings
-      token(/".*"/) { |t| CEString.new(t[1...-1])}
+      token(/"[^"]*"/) { |t| CEString.new(t[1...-1])}
       
       #Numbers
       token(/^-?\d+\.\d+/) { |t| CEFloat.new(t.to_f) }
@@ -44,6 +45,8 @@ class CodEng
       token(/,/) {:comma}
       token(/nothing/) {CENil.new}
       token(/empty/) {CENil.new}
+      token(/return/) {:return}
+      token(/local/) {:var_decl}
       
       #Operators
       token(/\*\*/) { :exponent }
@@ -101,9 +104,9 @@ class CodEng
       rule :statement do
         match(:if_statement) { |m| m }
         match(:func_def) { |m| m }
-        match(:func_call) { |m| m }
         match(:while_loop) { |m| m}
         match(:print_statement) { |m| m }
+        match(:return_statement) { |m| m }
         match(:valid) { |m| m }
       end
 
@@ -126,6 +129,32 @@ class CodEng
         end
       end
 
+      rule :while_loop do
+        match(:while, :expr, :do, :block, :stop) do 
+          |_, condition, _, block, _| 
+          CEWhileLoopNode.new(condition, block)
+        end
+      end
+
+      rule :print_statement do
+        match(:print, :arg_list) { |_, block| CEPrintNode.new(block) }
+        match(:puts, :arg_list) { |_, block| CEPrintNode.new(block, true) }
+      end
+
+      rule :return_statement do
+        match(:return, :statement) { |_, expr| CEReturn.new(expr) }
+      end
+
+      rule :valid do
+        match(:assign) { |m| m }
+        match(:func_call) { |m| m }
+        match(:expr) { |m| m }
+      end
+
+      rule :assign do
+        match(:var, :assign_operator, :expr) { |var, _, expr| CEVarAssignNode.new(var, expr) }
+      end
+
       rule :func_call do
         match(:call, :var, :with, :arg_list) { |_, name, _, args| CEFunctionCallNode.new(name, args) }
         match(:call, :var) { |_, name| CEFunctionCallNode.new(name) }
@@ -143,28 +172,7 @@ class CodEng
       end
 
       rule :arg_decl do
-        match(:statement) { |m| m }
-      end
-
-      rule :while_loop do
-        match(:while, :expr, :do, :block, :stop) do 
-          |_, condition, _, block, _| 
-          CEWhileLoopNode.new(condition, block)
-        end
-      end
-
-      rule :print_statement do
-        match(:print, :left_para, :arg_list, :right_para ) { |_, _, block, _| CEPrintNode.new(block) }
-        match(:puts, :left_para, :arg_list, :right_para ) { |_, _, block, _| CEPrintNode.new(block, true) }
-      end
-
-      rule :valid do
-        match(:assign) { |m| m }
-        match(:expr) { |m| m }
-      end
-
-      rule :assign do
-        match(:var, :assign_operator, :expr) { |var, _, expr| CEVarAssignNode.new(var, expr) }
+        match(:valid) { |m| m }
       end
 
       rule :expr do
@@ -240,6 +248,7 @@ class CodEng
       end
 
       rule :var do
+        match(:var_decl, CEVariable) { |_ ,var| CEVarDeclerationNode.new(var) }
         match(CEVariable) { |var| var }
       end
 

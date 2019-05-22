@@ -1,13 +1,8 @@
-x = 10
-define fun1 do
-x
+define printer with x do
+  writeln x
+  if x > 0 then
+    call printer with x - 1 
+  stop
 stop
 
-define fun2 do
-x = 20
-call fun1
-stop
-
-call fun2
-write(x)
-
+call printer with 2

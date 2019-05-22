@@ -11,11 +11,11 @@ class CEProgramNode
   end
 
   def assess(scope)
-    last_statement = CENil
+    latest_statement = CENil
     @statements.each do |statement|
-      last_statement = statement.assess(scope)
+      latest_statement = statement.assess(scope)
     end
-    return last_statement
+    return latest_statement
   end
 end
 
@@ -23,11 +23,16 @@ class CEFunctionDefNode
   # Defines functions
   attr_reader :name, :block, :args
   def initialize(name, block, args=[])
-    @name, @block, @args = name, block, args
+    @name, @block = name, block
+    if args.is_a?(Array)
+      @args = args
+    else
+      @args = [args]
+    end
   end
 
   def assess(scope)
-    scope.add_fun(CEFunction.new(@name, @block, @args))
+    scope.add_fun(CEFunction.new(@name, @block, CEScope.new('function', scope), @args))
   end
 end
 
@@ -38,14 +43,28 @@ class CEFunctionCallNode
   end
 
   def assess(scope)
-    new_scope = CEScope.new("Function #{@name.to_s}", scope)
     fun = scope.get_fun(@name)
-    if @args.size != 0
+    if @args.size > fun.args.size or @args.size < fun.args.size - fun.defaults
+      raise "Invalid number of arguments, expected #{fun.args.size} got #{@args.size}"
+    elsif @args.size != 0
+      puts "Calling args: ", @args.inspect
+      puts "Defined args: ", fun.args.inspect
       @args.zip(fun.args).each do |arg|
-        new_scope.set_var(arg[1], arg[0])
+        puts "Zipped arg: ", arg.inspect
+        fun.scope.set_var(arg[1], arg[0].assess(scope))
       end
     end
-    fun.assess(new_scope)
+    fun.assess(fun.scope)
+  end
+end
+
+class CEReturn
+  def initialize(expr)
+    @expr = expr
+  end
+
+  def assess(scope)
+    return @expr.assess(scope)
   end
 end
 
@@ -130,7 +149,22 @@ class CEArithmeticOpNode
       if new_value.class == Integer then return CEInteger.new(new_value)
       elsif new_value.class == Float then return CEFloat.new(new_value)
       end
-      raise "#{expr1} or #{expr2} is of wrong type, should be CEInteger or CEFloat"
+
+    elsif expr1.is_a?(CEString) and expr2.is_a?(CEString)
+      case @op
+      when :plus then return CEString.new(expr1.value + expr2.value)
+      end
+      raise "Invalid operator #{@op} for object type CEString"
+
+    elsif expr1.is_a?(CEString) or expr2.is_a?(CEString) and  expr1.is_a?(CEInteger) or expr2.is_a?(CEInteger) 
+
+      case @op
+      when :mult then return CEString.new(expr1.value * expr2.value)
+      end
+      raise "Invalid operator #{@op} for object types CEString and CEInteger"
+
+    else
+      raise "#{expr1} or #{expr2} is of wrong type, should be CEInteger, CEFloat or CEString in arithmetic operations"
     end
   end
 end
@@ -189,17 +223,30 @@ end
 
 class CEVarAssignNode
   # Assigns varibles to the scope
+  attr_reader :expr, :var
   def initialize(var, expr)
       @var = var
       @expr = expr
   end
 
   def assess(scope)
-    if scope.contains?(@var.name)
-      scope = scope.get_scope(@var.name)
+    if not @var.is_a?(CEVariable)
+      @var = @var.assess(scope)
     end
     scope.add_var(@var, @expr.assess(scope))
     return @expr.assess(scope)
+  end
+end
+
+class CEVarDeclerationNode
+  # Assigns varibles to the scope
+  def initialize(var)
+      @var = var
+  end
+
+  def assess(scope)
+    scope.set_var(@var, CENil.new)
+    return @var
   end
 end
 

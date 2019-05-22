@@ -55,16 +55,32 @@ end
 class CEFunction < CEObject
   # Contains a code block and arguments. 
   # Created by CEFunctionDef and assessed by CEFunctionCall
-  attr_reader :name, :block, :args
-  def initialize(name, block, args=[])
-    @name, @block, @args = name, block, args
+  attr_reader :name, :block, :args, :defaults, :scope
+  def initialize(name, block, scope, args=[])
+    @name, @block, @scope = name, block, scope
+    @args = []
+    @defaults = 0
+    args.each do |arg|
+      if arg.is_a?(CEVarAssignNode)
+        @scope.set_var(arg.var, arg.expr.assess(@scope)) 
+        @defaults = @defaults + 1
+        arg = arg.var
+      end
+      @args.push(arg)
+    end
   end
 
   def assess(scope)
     if @block.size == 0
       return CENil
     end
-    @block.each { |b| b.assess(scope) }
+    @block.each do |b| 
+      if b.is_a?(CEReturn)
+        return b.assess(scope)
+      else
+        b.assess(scope)
+      end
+    end
   end
 end
 
