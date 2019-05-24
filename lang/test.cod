@@ -1,8 +1,11 @@
 define printer with x do
-  writeln x
-  if x > 0 then
-    call printer with x - 1 
-  stop
+  return x + 2
 stop
 
-call printer with 2
+x = call printer with 2
+shout x
+
+y = append 3 to list
+
+y
+

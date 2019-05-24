@@ -1,9 +1,6 @@
 #!/usr/bin/env ruby
 require_relative 'CodEngClassDef.rb'
 
-#Parsern genererar noder
-#I noderna kommer alla andra klasser att kallas och 
-
 class CEProgramNode
   # Top layer node, contains a list of other nodes.
   def initialize(statements)
@@ -20,7 +17,7 @@ class CEProgramNode
 end
 
 class CEFunctionDefNode
-  # Defines functions
+  # Creates function-objects with in the appropriate scope.
   attr_reader :name, :block, :args
   def initialize(name, block, args=[])
     @name, @block = name, block
@@ -37,7 +34,7 @@ class CEFunctionDefNode
 end
 
 class CEFunctionCallNode
-  # Translates arguments and then calls the function
+  # Translates arguments and places them in the scope of the function. It then runs the function.
   def initialize(name, args=[])
     @name, @args = name.name, args
   end
@@ -47,10 +44,7 @@ class CEFunctionCallNode
     if @args.size > fun.args.size or @args.size < fun.args.size - fun.defaults
       raise "Invalid number of arguments, expected #{fun.args.size} got #{@args.size}"
     elsif @args.size != 0
-      puts "Calling args: ", @args.inspect
-      puts "Defined args: ", fun.args.inspect
       @args.zip(fun.args).each do |arg|
-        puts "Zipped arg: ", arg.inspect
         fun.scope.set_var(arg[1], arg[0].assess(scope))
       end
     end
@@ -115,7 +109,6 @@ end
 class CENotNode
   # Assesses an expressions boolean value and reverses it
   def initialize(expr)
-      #Logic NOT
       @expr = expr
   end
 
@@ -130,7 +123,7 @@ class CENotNode
 end
 
 class CEArithmeticOpNode
-  # This node handles all basic math
+  # This node handles all operations with arithmetic operators, raises errors when operands are of wrong type.
   def initialize(expr1, op, expr2)
     @expr1, @expr2 = expr1, expr2
     @op = op
@@ -165,6 +158,27 @@ class CEArithmeticOpNode
 
     else
       raise "#{expr1} or #{expr2} is of wrong type, should be CEInteger, CEFloat or CEString in arithmetic operations"
+    end
+  end
+end
+
+class CEArrayOpNode
+  def initialize(op, list, expr=CENil.new, pos=CEInteger.new(0))
+    @op, @list, @expr, @pos = op, list, expr, pos
+  end
+
+  def assess(scope)
+    expr, list, pos = @expr.assess(scope), @list.assess(scope), @pos.assess(scope)
+    if not list.is_a?(CEArray)
+      raise "Cannot perform list operations on #{list.class}"
+    else
+      case @op
+      when :place then return list.add(expr, pos.value)
+      when :remove then return list.remove(pos.value)
+      when :append then return list.append(expr)
+      when :get then return list.get(pos.value)
+      when :size then return list.size()
+      end
     end
   end
 end
@@ -233,13 +247,14 @@ class CEVarAssignNode
     if not @var.is_a?(CEVariable)
       @var = @var.assess(scope)
     end
-    scope.add_var(@var, @expr.assess(scope))
-    return @expr.assess(scope)
+    expr = @expr.assess(scope)
+    scope.add_var(@var, expr)
+    return expr
   end
 end
 
 class CEVarDeclerationNode
-  # Assigns varibles to the scope
+  # Assigns varibles to the local scope
   def initialize(var)
       @var = var
   end

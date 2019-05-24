@@ -27,6 +27,9 @@ class CodEng
       token(/true/) { CEBool.new(true) }
       token(/false/) { CEBool.new(false) }
 
+      #Arrays
+      token(/list/) { CEArray.new() }
+
       #Keywords
       token(/stop/) { :stop }
       token(/end/) { :stop }
@@ -38,8 +41,8 @@ class CodEng
       token(/if/) { :if }
       token(/else/) { :else }
       token(/then/) { :then }
-      token(/writeln/) { :puts }
-      token(/write/) { :print }
+      token(/shout/) { :puts }
+      token(/say/) { :print }
       token(/\(/) {:left_para}
       token(/\)/) {:right_para}
       token(/,/) {:comma}
@@ -79,6 +82,19 @@ class CodEng
       token(/less than/) { :less }
       token(/=/) { :assign_operator }
       token(/is/) { :assign_operator }
+
+      #Lists
+      token(/place/) { :place }
+      token(/append/) { :append }
+      token(/element/) { :element }
+      token(/remove/) { :remove }
+      token(/get/) { :get }
+      token(/size/) { :size }
+      token(/to/) { :to }
+      token(/of/) { :of }
+      token(/in/) { :in }
+      token(/at/) { :at }
+
 
       #Variables
       token(/[a-zA-Z_0-9]+/) { |t| CEVariable.new(t) }
@@ -147,7 +163,6 @@ class CodEng
 
       rule :valid do
         match(:assign) { |m| m }
-        match(:func_call) { |m| m }
         match(:expr) { |m| m }
       end
 
@@ -177,6 +192,14 @@ class CodEng
 
       rule :expr do
         match(:logic_OR) { |m| m }
+      end
+
+      rule :list_ops do
+        match( :place, :valid, :at, CEInteger, :in, :var ) { |op, expr, _, pos, _, list| CEArrayOpNode.new(op, list, expr, pos) }
+        match( :remove, :element, :at, CEInteger, :in, :var ) { |op, _, _, pos, _, list| CEArrayOpNode.new(op, list, CENil.new, pos) }
+        match( :append, :valid, :to, :var ) {  |op, expr, _, list| CEArrayOpNode.new(op, list, expr, CENil.new)  }
+        match( :get, :element, :at, CEInteger, :in, :var ) {  |op, _, _, pos, _, list| CEArrayOpNode.new(op, list, CENil.new, pos)  }
+        match( :size, :of, :var ) {  |op, _, list| CEArrayOpNode.new(op, list)  }
       end
 
       rule :logic_OR do
@@ -231,6 +254,8 @@ class CodEng
         match(:num) { |m| m }
         match(:string) { |m| m }
         match(:var) { |m| m }
+        match(:func_call) { |m| m }
+        match(:list_ops) { |m| m }
         match(:nil) { |m| m }
       end
 
@@ -250,6 +275,11 @@ class CodEng
       rule :var do
         match(:var_decl, CEVariable) { |_ ,var| CEVarDeclerationNode.new(var) }
         match(CEVariable) { |var| var }
+        match(:list) { |m| m }
+      end
+
+      rule :list do
+        match(CEArray) { |m| m }
       end
 
       rule :nil do

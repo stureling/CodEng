@@ -27,6 +27,40 @@ class CEPrintable < CEObject
   # Base class for object with printable values
 end
 
+class CEArray < CEPrintable
+  attr_reader
+  def initialize()
+    @array = []
+  end
+
+  def append(expr)
+    @array.append(expr)
+    return self
+  end
+
+  def add(expr, pos)
+    @array.insert(pos, expr)
+    return self
+  end
+
+  def remove(pos)
+    @array.delete_at(pos)
+    return self
+  end
+
+  def get(pos)
+    return @array[pos]
+  end
+
+  def size()
+    return CEInteger.new(@array.size)
+  end
+
+  def assess(scope)
+    return self
+  end
+end
+
 class CENumber < CEPrintable
   # Base class for numbers
 end
