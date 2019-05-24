@@ -163,6 +163,7 @@ class CEArithmeticOpNode
 end
 
 class CEArrayOpNode
+  # Handles all operations for arrays
   def initialize(op, list, expr=CENil.new, pos=CEInteger.new(0))
     @op, @list, @expr, @pos = op, list, expr, pos
   end
@@ -276,6 +277,16 @@ class CEPrintNode
       expr = arg.assess(scope)
       if expr.is_a?(CEPrintable)
         expr = expr.value
+      elsif expr.is_a?(CEArray)
+        print_array = []
+        expr.array.each do |element|
+          if element.is_a?(CEPrintable)
+            print_array.append(element.value)  
+          else
+            print_array.append(element)
+          end
+        end
+        expr = print_array
       end
       if @newline
         puts expr.inspect

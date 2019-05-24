@@ -27,8 +27,8 @@ class CEPrintable < CEObject
   # Base class for object with printable values
 end
 
-class CEArray < CEPrintable
-  attr_reader
+class CEArray < CEObject
+  attr_reader :array
   def initialize()
     @array = []
   end
